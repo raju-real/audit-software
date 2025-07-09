@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('stop_no');
             $table->string('short_title',10)->comment('Like Step 1(stop_no)');
             $table->string('title',100);
+            $table->string('slug',255);
             $table->string('isa_reference',255)->nullable();
             $table->longText('description')->nullable();
             $table->integer('created_by');
