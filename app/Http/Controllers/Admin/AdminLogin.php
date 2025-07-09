@@ -27,7 +27,7 @@ class AdminLogin extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             auth()->user()->update(['last_login_at' => now()]);
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return redirect()
