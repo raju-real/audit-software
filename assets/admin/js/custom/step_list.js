@@ -2,9 +2,9 @@
     "use strict";
     let base_url = AppHelpers.base_url;
 
-    $(document).on('change', '.brand-status', function () {
-        const brand_id = $(this).data('id');
-        axios.put(`${base_url}/update-brand-status/${brand_id}`)
+    $(document).on('change', '.step-status', function () {
+        const step_id = $(this).data('id');
+        axios.put(`${base_url}/update-step-status/${step_id}`)
             .catch(error => {
                 // Display an error message if the request fails
                 const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
@@ -18,7 +18,7 @@
         axis: "y",
         update: function (e, ui) {
             let sortData = $(".sort_section").sortable('toArray', {attribute: 'data-id'});
-            axios.post(base_url + '/sort-brands', {
+            axios.post(base_url + '/audit-steps', {
                 ids: sortData.join(',')
             });
             // Dynamically update sorting_serial in the table (want to show)

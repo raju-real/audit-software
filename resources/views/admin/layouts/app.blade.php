@@ -129,7 +129,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
-                                SV ECOMMERCE
+                                {{ siteSettings()['company_name'] ?? 'Company Name' }}
                             </div>
                         </div>
                     </div>
@@ -191,9 +191,9 @@
     <script src="{{ asset('assets/common/datetimepicker/js/moment-timezone-with-data.min.js') }}"></script>
     <script src="{{ asset('assets/common/datetimepicker/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/common/datetimepicker/js/custom_picker.js') }}"></script>
-    // Custom created js
+    {{-- Custom created js--}}
     <script src="{{ asset('assets/admin/js/helpers.js') }}"></script>
-    // Page wise js
+    {{-- Page wise js--}}
     <script src="{{ asset('assets/admin/js/common.js') }}"></script>
     <script src="{{ asset('assets/admin/js/app.js') }}"></script>
 

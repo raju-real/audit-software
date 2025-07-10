@@ -15,8 +15,7 @@ return new class extends Migration
     {
         Schema::create('audit_steps', function (Blueprint $table) {
             $table->id();
-            $table->integer('stop_no');
-            $table->string('short_title',10)->comment('Like Step 1(stop_no)');
+            $table->integer('step_no');
             $table->string('title',100);
             $table->string('slug',255);
             $table->string('isa_reference',255)->nullable();
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->enum('status',['active','inactive'])->default("active");
             $table->timestamps();
             $table->softDeletes();
+            $table->integer('deleted_by')->nullable();
         });
     }
 
