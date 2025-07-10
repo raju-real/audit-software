@@ -6,6 +6,12 @@
                 <span>Dashboard</span>
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions') }}">
+                <i class="bx bx-list-ol"></i>
+                <span>Audit Steps</span>
+            </a>
+        </li>
 
         <li class="{{ isMainMenuActive('site-settings') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">

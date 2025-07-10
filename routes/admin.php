@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\StepQuestionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -30,8 +31,14 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
         Route::post('verify-code', 'verifyCode')->name('verify-code');
     });
     // Audit step
-    Route::controller(AuditStepController::class)->group(function() {
-
+    Route::resource('audit-steps', AuditStepController::class);
+    Route::controller(AuditStepController::class)->group(function () {
+        Route::put('update-step-status/{id}', 'updateCategoryStatus')->name('update-step-status');
+        Route::post('sort-audit-steps', 'sortCategories')->name('sort-audit-steps');
+    });
+    Route::controller(StepQuestionController::class)->group(function () {
+        Route::get('question-list/{step_slug}', 'questionList')->name('question-list');
+        Route::get('add-question/{step_slug}', 'addQuestion')->name('add-question');
     });
     // Only for administrator
     Route::middleware('administrator')->group(function () {

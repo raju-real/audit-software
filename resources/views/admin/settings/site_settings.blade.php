@@ -123,31 +123,6 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Slogan</label>
-                                    <input type="text" name="slogan"
-                                           value="{{ old('slogan') ?? siteSettings()['slogan'] ?? '' }}"
-                                           class="form-control {{ hasError('slogan') }}"
-                                           placeholder="Slogan">
-                                    @error('slogan')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Website URL</label>
-                                    <input type="text" name="website_url"
-                                           value="{{ old('website_url') ?? siteSettings()['website_url'] ?? '' }}"
-                                           class="form-control {{ hasError('website_url') }}"
-                                           placeholder="Website URL">
-                                    @error('website_url')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
                                     <label class="form-label">Facebook URL</label>
                                     <input type="text" name="facebook_url"
                                            value="{{ old('facebook_url') ?? siteSettings()['facebook_url'] ?? '' }}"
@@ -170,81 +145,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Youtube URL</label>
-                                    <input type="text" name="youtube_url"
-                                           value="{{ old('youtube_url') ?? siteSettings()['youtube_url'] ?? '' }}"
-                                           class="form-control {{ hasError('youtube_url') }}"
-                                           placeholder="Youtube URL">
-                                    @error('youtube_url')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Google Map URL</label>
-                                    <input type="text" name="google_map_url"
-                                           value="{{ old('google_map_url') ?? siteSettings()['google_map_url'] ?? '' }}"
-                                           class="form-control {{ hasError('google_map_url') }}"
-                                           placeholder="Google Map URL">
-                                    @error('google_map_url')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Footer Text</label>
-                                    <textarea name="footer_text" id="footer_text" cols="30" rows="5"
-                                              class="form-control {{ hasError('footer_text') }}"
-                                              placeholder="Footer Text">{{ old('footer_text') ?? siteSettings()['footer_text'] ?? '' }}</textarea>
-                                    @error('footer_text')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Support Policy</label>
-                                    <textarea class="form-control" name="support_policy"
-                                              id="support_policy">{{ old('support_policy') ?? siteSettings()['support_policy'] ?? '' }}</textarea>
-                                    @error('support_policy')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Return Policy</label>
-                                    <textarea class="form-control" name="return_policy"
-                                              id="return_policy">{{ old('return_policy') ?? siteSettings()['return_policy'] ?? '' }}</textarea>
-                                    @error('return_policy')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">About Us</label>
-                                    <textarea class="form-control" name="about_us"
-                                              id="about_us">{{ old('about_us') ?? siteSettings()['about_us'] ?? '' }}</textarea>
-                                    @error('about_us')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Mission & Vision</label>
-                                    <textarea class="form-control" name="mission_and_vision"
-                                              id="mission_and_vision">{{ old('mission_and_vision') ?? siteSettings()['mission_and_vision'] ?? '' }}</textarea>
-                                    @error('mission_and_vision')
-                                    {!! displayError($message) !!}
-                                    @enderror
-                                </div>
-                            </div>
                         </div>
                         <div>
                             <x-submit-button></x-submit-button>
@@ -260,14 +160,11 @@
     <script>
         let config = {
             toolbar: [
-                ['Bold', 'Italic', 'Strike', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'NumberedList', 'BulletedList'],
+                ['Bold', 'Italic', 'Strike', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'NumberedList', 'BulletedList', '-', 'Maximize'],
             ]
         };
 
         CKEDITOR.config.allowedContent = true;
-        CKEDITOR.replace('support_policy', config);
-        CKEDITOR.replace('return_policy', config);
         CKEDITOR.replace('about_us', config);
-        CKEDITOR.replace('mission_and_vision', config);
     </script>
 @endpush
