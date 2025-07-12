@@ -7,7 +7,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions') }}">
+            <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
                 <i class="bx bx-list-ol"></i>
                 <span>Audit Steps</span>
             </a>

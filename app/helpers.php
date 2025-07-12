@@ -103,6 +103,16 @@ if (!function_exists('getStatus')) {
     }
 }
 
+if (!function_exists('getSureStatus')) {
+    function getSureStatus(): array
+    {
+        return [
+            (object)['value' => 'yes', 'title' => 'Yes'],
+            (object)['value' => 'no', 'title' => 'No']
+        ];
+    }
+}
+
 if (!function_exists('isActive')) {
     function isActive($status): bool
     {
@@ -288,6 +298,16 @@ if (!function_exists('authUser')) {
     function authUser()
     {
         return Auth::check() ? Auth::user() : null;
+    }
+}
+
+// Project related
+
+if (!function_exists('stepSlugById')) {
+
+    function stepSlugById($step_id = null) // Changed Null to null (lowercase)
+    {
+        return \App\Models\AuditStep::where('id', $step_id)->pluck('slug')->first();
     }
 }
 

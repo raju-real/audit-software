@@ -17,4 +17,8 @@ class AuditStep extends Model
     {
         return 'Step '.$this->step_no;
     }
+
+    public function questions() {
+        return $this->hasMany(AuditStepQuestion::class,'audit_step_id','id');
+    }
 }

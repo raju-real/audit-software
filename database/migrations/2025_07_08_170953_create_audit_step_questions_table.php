@@ -17,13 +17,18 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('audit_step_id');
             $table->string('question', 100);
-            $table->boolean('is_closed_ended')->default(true)->comment('Is this a closed-ended question (Yes,No or N/A)?');
-            $table->boolean('is_boolean_answer_required')->default(true)->comment('Is answering the closed-ended question question mandatory?');
-            $table->boolean('has_text_answer')->default(true)->comment('Does this question need a text answer?');
-            $table->boolean('is_text_answer_required')->default(true)->comment('Is the text answer mandatory?');
-            $table->boolean('has_document')->default(true)->comment('Does this question need a document upload?');
-            $table->boolean('is_document_required')->default(true)->comment('Is the document upload mandatory?');
+            $table->string('slug', 255);
+            $table->enum('is_closed_ended',['yes','no'])->default('no')->comment('Is this a closed-ended question (Yes,No or N/A)?');
+            $table->enum('is_boolean_answer_required',['yes','no'])->default('no')->comment('Is answering the closed-ended question mandatory?');
+            $table->enum('has_text_answer',['yes','no'])->default('no')->comment('Does this question need a text answer?');
+            $table->enum('is_text_answer_required',['yes','no'])->default('no')->comment('Is the text answer mandatory?');
+            $table->enum('has_document',['yes','no'])->default('no')->comment('Does this question need a document upload?');
+            $table->enum('is_document_required',['yes','no'])->default('no')->comment('Is the document upload mandatory?');
+            $table->integer('sorting_serial');
+            $table->enum('status',['active','inactive'])->default("active");
             $table->timestamps();
+            $table->softDeletes();
+            $table->integer('deleted_by')->nullable();
         });
     }
 
