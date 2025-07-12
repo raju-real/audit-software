@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StepQuestionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +32,8 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
         Route::post('send-verification-code', 'sendVerificationCode')->name('send-verification-code');
         Route::post('verify-code', 'verifyCode')->name('verify-code');
     });
+    Route::resource('designations',DesignationController::class);
+    Route::resource('staffs',StaffController::class);
     // Audit step
     Route::resource('audit-steps', AuditStepController::class);
     Route::controller(AuditStepController::class)->group(function () {

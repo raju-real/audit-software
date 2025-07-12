@@ -266,9 +266,9 @@ if (!function_exists('isActive')) {
 }
 
 if (!function_exists('textLimit')) {
-    function textLimit($text = "")
+    function textLimit($text = "", $limit = 20)
     {
-        return Str::limit($text, 20, '...');
+        return Str::limit($text, $limit, '...');
     }
 }
 

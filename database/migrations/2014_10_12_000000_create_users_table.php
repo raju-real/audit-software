@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->enum('role',['administrator','admin','user']);
+            $table->integer('designation_id')->nullable();
             $table->string('name',191);
             $table->string('email',30)->unique();
             $table->string('mobile',11)->unique()->nullable();
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('password',400);
             $table->rememberToken();
             $table->string('image',255)->nullable();
+            $table->string('cv_path',255)->nullable();
             $table->enum('status',['active','inactive'])->default("active");
             $table->dateTime('last_login_at')->nullable();
             $table->dateTime('last_logout_at')->nullable();
