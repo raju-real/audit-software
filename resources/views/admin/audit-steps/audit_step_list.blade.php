@@ -35,7 +35,7 @@
                             </thead>
                             <tbody class="sort_section">
                             @forelse($steps as $step)
-                                <tr>
+                                <tr data-id="{{ $step->id }}">
                                     <td class="text-center sorting-serial handle">{{ $step->step_no }}</td>
                                     <td>{{ $step->title ?? '' }}</td>
                                     <td>{{ textLimit($step->isa_reference) ?? '' }}</td>

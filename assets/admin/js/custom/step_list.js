@@ -18,7 +18,7 @@
         axis: "y",
         update: function (e, ui) {
             let sortData = $(".sort_section").sortable('toArray', {attribute: 'data-id'});
-            axios.post(base_url + '/audit-steps', {
+            axios.post(base_url + '/sort-audit-steps', {
                 ids: sortData.join(',')
             });
             // Dynamically update sorting_serial in the table (want to show)

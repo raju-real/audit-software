@@ -33,12 +33,18 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
     // Audit step
     Route::resource('audit-steps', AuditStepController::class);
     Route::controller(AuditStepController::class)->group(function () {
-        Route::put('update-step-status/{id}', 'updateCategoryStatus')->name('update-step-status');
-        Route::post('sort-audit-steps', 'sortCategories')->name('sort-audit-steps');
+        Route::put('update-step-status/{id}', 'updateStepStatus')->name('update-step-status');
+        Route::post('sort-audit-steps', 'sortSteps')->name('sort-audit-steps');
     });
     Route::controller(StepQuestionController::class)->group(function () {
         Route::get('question-list/{step_slug}', 'questionList')->name('question-list');
         Route::get('add-question/{step_slug}', 'addQuestion')->name('add-question');
+        Route::post('store-question', 'storeQuestion')->name('store-question');
+        Route::get('edit-question/{question_slug}','editQuestion')->name('edit-question');
+        Route::put('update-question/{question_slug}','updateQuestion')->name('update-question');
+        Route::delete('delete-question/{question_slug}','deleteQuestion')->name('delete-question');
+        Route::put('update-question-status/{id}', 'updateQuestionStatus')->name('update-question-status');
+        Route::post('sort-questions', 'sortQuestions')->name('sort-questions');
     });
     // Only for administrator
     Route::middleware('administrator')->group(function () {

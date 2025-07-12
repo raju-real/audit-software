@@ -39,7 +39,7 @@ class AuditStepController extends Controller
         $step = new AuditStep();
         $step->step_no = AuditStep::max('step_no') + 1;
         $step->title = $request->title;
-        $step->slug = Str::slug($request->title);
+        $step->slug = time().'-'.Str::slug($request->title);
         $step->isa_reference = $request->isa_reference;
         $step->description = $request->description;
         $step->status = $request->status;
@@ -72,7 +72,6 @@ class AuditStepController extends Controller
         ]);
         $step = AuditStep::findOrFail($id);
         $step->title = $request->title;
-        $step->slug = Str::slug($request->title);
         $step->isa_reference = $request->isa_reference;
         $step->description = $request->description;
         $step->status = $request->status;
@@ -89,7 +88,7 @@ class AuditStepController extends Controller
         return redirect()->route('admin.audit-steps.index')->with(deleteMessage());
     }
 
-    public function updateCategoryStatus($id): \Illuminate\Http\JsonResponse
+    public function updateStepStatus($id): \Illuminate\Http\JsonResponse
     {
         $step = AuditStep::findOrFail($id);
         $step->status = $step->status === 'active' ? 'inactive' : 'active';
@@ -102,18 +101,17 @@ class AuditStepController extends Controller
         // Optional: Handle failure case if needed
         return response()->json([
             'status' => 'error',
-            'message' => 'Failed to update category status.',
+            'message' => 'Failed to update step status.',
         ], 500);
     }
 
-    public function sortCategories(Request $request)
+    public function sortSteps(Request $request)
     {
         if ($request->has('ids')) {
             $arr = explode(',', $request->input('ids'));
-
             foreach ($arr as $sortOrder => $id) {
-                $row = Category::find($id);
-                $row->sorting_serial = $sortOrder + 1;
+                $row = AuditStep::find($id);
+                $row->step_no = $sortOrder + 1;
                 $row->save();
             }
             return ['success' => true, 'message' => 'Updated'];
