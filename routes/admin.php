@@ -34,6 +34,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
     });
     Route::resource('designations',DesignationController::class);
     Route::resource('staffs',StaffController::class);
+    Route::controller(StaffController::class)->group(function () {
+        Route::put('update-staff-status/{id}', 'updateStaffStatus')->name('update-staff-status');
+    });
     // Audit step
     Route::resource('audit-steps', AuditStepController::class);
     Route::controller(AuditStepController::class)->group(function () {

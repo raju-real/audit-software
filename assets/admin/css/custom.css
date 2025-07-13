@@ -151,6 +151,16 @@
     width: 10%;
 }
 
+.text-center > .custom-label-margin {
+    margin-bottom: -5px !important;
+}
+
+.table > :not(caption) > * > * {
+    padding: 10px 10px;
+}
+
+.te
+
 
 @media (max-width: 576px) {
     .pagination li {

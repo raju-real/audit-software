@@ -40,7 +40,7 @@
                                         <input type="checkbox" id="question-{{ $loop->index + 1 }}" class="question-status"
                                                data-id="{{ $question->id }}"
                                                switch="bool" {{ isActive($question->status) ? 'checked' : '' }} />
-                                        <label for="question-{{ $loop->index + 1 }}" data-on-label="Yes"
+                                        <label class="custom-label-margin" for="question-{{ $loop->index + 1 }}" data-on-label="Yes"
                                                data-off-label="No"></label>
                                     </td>
                                     <td class="text-center">

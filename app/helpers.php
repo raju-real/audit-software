@@ -243,6 +243,39 @@ if (!function_exists('segmentOne')) {
     }
 }
 
+if (!function_exists('encrypt_partial')) {
+    function encrypt_partial($value, int $length = 15): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+        // Convert to string (safe for int or float)
+        $stringValue = (string)$value;
+        // Split
+        $prefix = substr($stringValue, 0, $length);
+        $suffix = substr($stringValue, $length);
+        // Encrypt the prefix
+        $encryptedPrefix = \Illuminate\Support\Facades\Crypt::encrypt($prefix);
+        // Optional: Add a separator for easier parsing during decryption
+        return $encryptedPrefix . '|PART|' . $suffix;
+    }
+}
+
+if (!function_exists('decrypt_partial')) {
+    function decrypt_partial($value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+        // Split encrypted and plain part
+        [$encryptedPrefix, $suffix] = explode('|PART|', $value, 2);
+        // Decrypt prefix
+        $decryptedPrefix = \Illuminate\Support\Facades\Crypt::decrypt($encryptedPrefix);
+        return $decryptedPrefix . $suffix;
+    }
+}
+
+
 if (!function_exists('isMainMenuActive')) {
     function isMainMenuActive(string $fieldName): string
     {

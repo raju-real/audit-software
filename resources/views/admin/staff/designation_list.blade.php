@@ -24,19 +24,19 @@
                         <table class="table table-striped table-bordered mb-0 text-nowrap">
                             <thead>
                             <tr>
-                                <th>Sl.no</th>
+                                <th class="text-center">Sl.no</th>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @forelse($designations as $designation)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
+                                    <td class="text-center">{{ $loop->index + 1 }}</td>
                                     <td>{{ $designation->name ?? '' }}</td>
                                     <td>{{ textLimit($designation->description,40) ?? '' }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" href="{{ route('admin.designations.edit',$designation->slug) }}"
                                            class="btn btn-sm btn-soft-success" ><i class="fa fa-edit"></i></a>
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"

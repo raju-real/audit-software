@@ -47,7 +47,7 @@
                                     </td>
                                     <td class="text-center">
                                         <input type="checkbox" id="step-{{ $loop->index + 1 }}" class="step-status" data-id="{{ $step->id }}" switch="bool" {{ isActive($step->status) ? 'checked' : '' }} />
-                                        <label for="step-{{ $loop->index + 1 }}" data-on-label="Yes" data-off-label="No"></label>
+                                        <label class="custom-label-margin" for="step-{{ $loop->index + 1 }}" data-on-label="Yes" data-off-label="No"></label>
                                     </td>
                                     <td class="text-center">
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
