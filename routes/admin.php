@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\Admin\DesignationController;
-use App\Http\Controllers\Admin\StaffController;
-use App\Http\Controllers\Admin\StepQuestionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Admin\AdminLogin;
-use App\Http\Controllers\Admin\AuditStepController;
+use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AuditStepController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\StepQuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
         Route::post('send-verification-code', 'sendVerificationCode')->name('send-verification-code');
         Route::post('verify-code', 'verifyCode')->name('verify-code');
     });
+
+
     Route::resource('designations',DesignationController::class);
     Route::resource('staffs',StaffController::class);
     Route::controller(StaffController::class)->group(function () {
@@ -55,6 +58,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
     });
     // Only for administrator
     Route::middleware('administrator')->group(function () {
+        Route::resource('audits', AuditController::class);
         // Settings
         Route::controller(SettingController::class)->group(function () {
             Route::get('site-settings', 'siteSettings')->name('site-settings');

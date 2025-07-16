@@ -6,6 +6,24 @@
                 <span>Dashboard</span>
             </a>
         </li>
+        <li class="{{ isMainMenuActive('audits') }}">
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class='bx  bx-folder-open'></i> 
+                <span>Manage Audit</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.audits.index') }}" class="{{ isSubMenuActive('audits') }}">
+                        <i class="bx bx-chevron-right"></i> Audit List
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.audits.create') }}" class="{{ isSubMenuActive('audits') }}">
+                        <i class="bx bx-chevron-right"></i> Create Audit
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li>
             <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
                 <i class="bx bx-list-ol"></i>
@@ -13,14 +31,14 @@
             </a>
         </li>
 
-        <li class="{{ isMainMenuActive('designations,admins') }}">
+        <li class="{{ isMainMenuActive('designations,staffs') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class="bx bx-user"></i>
                 <span>Admin/Staff</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
                 <li>
-                    <a href="{{ route('admin.staffs.index') }}" class="{{ isSubMenuActive('admins') }}">
+                    <a href="{{ route('admin.staffs.index') }}" class="{{ isSubMenuActive('staffs') }}">
                         <i class="bx bx-chevron-right"></i> Staff List
                     </a>
                 </li>
