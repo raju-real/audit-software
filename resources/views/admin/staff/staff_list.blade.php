@@ -18,6 +18,55 @@
 
     <div class="row">
         <div class="col-12">
+            <!-- Accordion for Search -->
+            <div class="accordion mb-3" id="accordionSearch">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSearch">
+                        <button class="accordion-button {{ request()->query() ? '' : 'collapsed' }}" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseSearch"
+                                aria-expanded="{{ request()->query() ? 'true' : 'false' }}"
+                                aria-controls="collapseSearch">
+                            Search
+                        </button>
+                    </h2>
+                    <div id="collapseSearch" class="accordion-collapse collapse {{ request()->query() ? 'show' : '' }}"
+                         aria-labelledby="headingSearch"
+                         data-bs-parent="#accordionSearch">
+                        <div class="accordion-body">
+                            <form method="GET" action="{{ route('admin.staffs.index') }}">
+                                <div class="row">
+                                    <div class="col-md-6 pb-4">
+                                        <div class="form-group">
+                                            <input type="search" name="search" class="form-control"
+                                                   placeholder="Search by Company Name, Mobile" value="{{ request('search') ?? '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <select name="status" class="form-select">
+                                                <option value="" {{ !isset(request()->status) ? 'selected' : '' }}>Status</option>
+                                                @foreach(getStatus() as $status)
+                                                    <option
+                                                        value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 mt-0">
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">

@@ -50,6 +50,25 @@
             </ul>
         </li>
 
+        <li class="{{ isMainMenuActive('companies,financial-years') }}">
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class='bx  bx-polygon'  ></i>   
+                <span>Company/F.Y</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.companies.index') }}" class="{{ isSubMenuActive('companies') }}">
+                        <i class="bx bx-chevron-right"></i> Company List
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.financial-years.index') }}" class="{{ isSubMenuActive('financial-years') }}">
+                        <i class="bx bx-chevron-right"></i> Financial Years
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <li class="{{ isMainMenuActive('site-settings') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class="bx bx-cog"></i>

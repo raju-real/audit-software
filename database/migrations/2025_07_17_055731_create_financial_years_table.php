@@ -13,18 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('audits', function (Blueprint $table) {
+        Schema::create('financial_years', function (Blueprint $table) {
             $table->id();
-            $table->string('audit_no');
-            $table->string('financial_year_id');
-            $table->integer('company_id');
-            $table->string('title',191);
-            $table->string('slug',255);
-            $table->longText('description')->nullable();
-            $table->integer('created_by');
+            $table->string('financial_year',10);
+            $table->text('description')->nullable();
+            $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->integer('deleted_by');
+            $table->integer('deleted_by')->nullable();
         });
     }
 
@@ -35,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('audits');
+        Schema::dropIfExists('financial_years');
     }
 };

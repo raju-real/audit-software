@@ -27,7 +27,7 @@ if (!function_exists('infoMessage')) {
 }
 
 if (!function_exists('deleteMessage')) {
-    function deleteMessage(string $type = 'primary', string $message = "Information has been updated successfully!"): array
+    function deleteMessage(string $type = 'primary', string $message = "Information has been deleted successfully!"): array
     {
         return [
             'type' => $type,
@@ -275,6 +275,30 @@ if (!function_exists('decrypt_partial')) {
     }
 }
 
+if (! function_exists('encrypt_decrypt')) {
+    function encrypt_decrypt($key, $type)
+    {
+        # type = encrypt/decrypt
+        $str_rand = "XxOx*4e!hQqG5b~9a";
+
+        if (!$key) {
+            return false;
+        }
+        if ($type == 'decrypt') {
+            $en_slash_added1 = trim(str_replace(array('audit'), '/', $key));
+            $en_slash_added = trim(str_replace(array('dcaudit'), '%', $en_slash_added1));
+            $key_value = $return = openssl_decrypt($en_slash_added, "AES-128-ECB", $str_rand);
+            return $key_value;
+        } elseif ($type == 'encrypt') {
+            $key_value = openssl_encrypt($key, "AES-128-ECB", $str_rand);
+            $en_slash_remove1 = trim(str_replace(array('/'), 'audit', $key_value));
+            $en_slash_remove = trim(str_replace(array('%'), 'dcaudit', $en_slash_remove1));
+            return $en_slash_remove;
+        }
+        return FALSE;    # if function is not used properly
+    }
+}
+
 
 if (!function_exists('isMainMenuActive')) {
     function isMainMenuActive(string $fieldName): string
@@ -343,4 +367,3 @@ if (!function_exists('stepSlugById')) {
         return \App\Models\AuditStep::where('id', $step_id)->pluck('slug')->first();
     }
 }
-

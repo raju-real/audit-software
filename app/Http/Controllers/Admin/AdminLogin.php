@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\TrustedDevice;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Services\TwoFactorSmsService;
 
 class AdminLogin extends Controller
 {
@@ -25,14 +27,38 @@ class AdminLogin extends Controller
             'status' => 'active',
         ];
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            auth()->user()->update(['last_login_at' => now()]);
-            return redirect()->intended(route('admin.dashboard'));
+        if (Auth::attempt($credentials, $request->remember)) {
+            $user = auth()->user();
+
+            // Update login time
+            $user->update(['last_login_at' => now()]);
+
+            // Check if device is remembered
+            if ($this->deviceIsRemembered($request, $user)) {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            // Trigger 2FA
+            $user->two_factor_code = rand(100000, 999999);
+            $user->two_factor_expires_at = now()->addMinutes(10);
+            $user->save();
+
+            // Send 2FA code via email or SMS here
+            // Mail::to($user)->send(new TwoFactorCodeMail($user));
+
+            return redirect()->route('admin.2fa.verify');
         }
 
         return redirect()
             ->back()
             ->withInput($request->only('email', 'remember'))
-            ->with('danger', 'Email or Password not matched!');
+            ->with('message', 'Email or Password not matched!');
+    }
+
+    protected function deviceIsRemembered(Request $request, $user): bool
+    {
+        $cookie = $request->cookie("remember_2fa_{$user->id}");
+
+        return $cookie === hash('sha256', $user->id . $user->email);
     }
 }

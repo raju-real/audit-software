@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use Illuminate\Http\Request;
 
 class AuditController extends Controller
@@ -14,7 +15,9 @@ class AuditController extends Controller
      */
     public function index()
     {
-        //
+        $data = Audit::query();
+        $audits = $data->latest()->paginate(20);
+        return view('admin.audits.audit_list',compact('audits'));
     }
 
     /**

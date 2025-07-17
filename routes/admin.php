@@ -4,14 +4,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Admin\AdminLogin;
+use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\Admin\AuditStepController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\StepQuestionController;
+use App\Http\Controllers\Admin\TwoFactorAuthController;
+use App\Http\Controllers\Admin\TwoFactorSetupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +24,18 @@ use App\Http\Controllers\Admin\StepQuestionController;
 |--------------------------------------------------------------------------
 */
 
-Route::view('/', 'admin.admin_login')->name('home');
+Route::view('/', 'admin.auth.admin_login')->name('home');
 Route::post('admin-login', AdminLogin::class)->middleware('throttle:5,1')->name('admin-login');
 
-Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
+Route::view('permission-denied', 'admin.permission_denied')->name('permission-denied');
+
+Route::controller(TwoFactorController::class)->middleware('auth')->group(function() {
+    Route::get('/2fa/verify', 'show')->name('admin.2fa.verify');
+    Route::post('/2fa/verify', 'verify')->name('admin.2fa.verify.post');
+});
+
+Route::group(['as' => 'admin.', 'middleware' => ['auth','2fa.verified']], function () {
+    
     Route::controller(DashboardController::class)->group(function () {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
@@ -34,9 +47,8 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
         Route::post('verify-code', 'verifyCode')->name('verify-code');
     });
 
-
-    Route::resource('designations',DesignationController::class);
-    Route::resource('staffs',StaffController::class);
+    Route::resource('designations', DesignationController::class);
+    Route::resource('staffs', StaffController::class);
     Route::controller(StaffController::class)->group(function () {
         Route::put('update-staff-status/{id}', 'updateStaffStatus')->name('update-staff-status');
     });
@@ -50,12 +62,17 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth']], function () {
         Route::get('question-list/{step_slug}', 'questionList')->name('question-list');
         Route::get('add-question/{step_slug}', 'addQuestion')->name('add-question');
         Route::post('store-question', 'storeQuestion')->name('store-question');
-        Route::get('edit-question/{question_slug}','editQuestion')->name('edit-question');
-        Route::put('update-question/{question_slug}','updateQuestion')->name('update-question');
-        Route::delete('delete-question/{question_slug}','deleteQuestion')->name('delete-question');
+        Route::get('edit-question/{question_slug}', 'editQuestion')->name('edit-question');
+        Route::put('update-question/{question_slug}', 'updateQuestion')->name('update-question');
+        Route::delete('delete-question/{question_slug}', 'deleteQuestion')->name('delete-question');
         Route::put('update-question-status/{id}', 'updateQuestionStatus')->name('update-question-status');
         Route::post('sort-questions', 'sortQuestions')->name('sort-questions');
     });
+    Route::resource('companies', CompanyController::class);
+    Route::controller(CompanyController::class)->group(function () {
+        Route::put('update-company-status/{id}', 'updateCompanyStatus')->name('update-company-status');
+    });
+    Route::resource('financial-years', FinancialYearController::class);
     // Only for administrator
     Route::middleware('administrator')->group(function () {
         Route::resource('audits', AuditController::class);

@@ -16,6 +16,14 @@ class StaffController extends Controller
     {
         $data = User::query();
         $data->admin();
+        $data->when(request()->get('search'),function($query) {
+           $search = request()->get('search');
+           $query->where('name',"LIKE","%{$search}%");
+           $query->orWhere('mobile',request('search'));
+        });
+        $data->when(request()->get('status'),function($query) {
+           $query->where('status',request()->get('status'));
+        });
         $staffs = $data->latest()->paginate(20);
         return view('admin.staff.staff_list', compact('staffs'));
     }
@@ -121,6 +129,7 @@ class StaffController extends Controller
             'message' => 'Failed to update Staff status.',
         ], 500);
     }
+    
 
 //    public function destroy($id)
 //    {
