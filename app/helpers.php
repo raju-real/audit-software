@@ -1,6 +1,12 @@
 <?php
 
+use App\Models\AuditAuditor;
+use App\Models\AuditSupervisor;
+use App\Models\Organization;
+use App\Models\FinancialYear;
+use App\Models\User;
 use Carbon\Carbon;
+use Dom\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
@@ -225,13 +231,14 @@ if (!function_exists('uploadImage')) {
 }
 
 if (!function_exists('uploadFile')) {
-    function uploadFile($file, string $path = "files/"): string
+    function uploadFile($file, string $folderName = "partial/"): string
     {
+        $folderPath = "assets/files/" . $folderName;
         $uniqueFileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-        if (!file_exists($path)) {
-            mkdir($path, 0755, true);
+        if (!file_exists($folderPath)) {
+            mkdir($folderPath, 0755, true);
         }
-        $file->move($path, $uniqueFileName);
+        $file->move($folderPath, $uniqueFileName);
         return $uniqueFileName;
     }
 }
@@ -360,10 +367,66 @@ if (!function_exists('authUser')) {
 
 // Project related
 
+if (!function_exists('getPriorityStatus')) {
+    function getPriorityStatus(): array
+    {
+        return [
+            (object)['value' => 'low', 'title' => 'Low'],
+            (object)['value' => 'medium', 'title' => 'Medium'],
+            (object)['value' => 'high', 'title' => 'High'],
+            (object)['value' => 'critical', 'title' => 'Critical']
+        ];
+    }
+}
+
+if (!function_exists('getWorkFlowStatus')) {
+    function getWorkFlowStatus(): array
+    {
+        return [
+            (object)['value' => 'draft', 'title' => 'Draft'],
+            (object)['value' => 'ongoing', 'title' => 'Ongoing'],
+            (object)['value' => 'reviewed', 'title' => 'Reviewed'],
+            (object)['value' => 'approved', 'title' => 'Approved'],
+            (object)['value' => 'rejected', 'title' => 'Rejected'],
+            (object)['value' => 'closed', 'title' => 'Closed']
+        ];
+    }
+}
+
 if (!function_exists('stepSlugById')) {
 
     function stepSlugById($step_id = null) // Changed Null to null (lowercase)
     {
         return \App\Models\AuditStep::where('id', $step_id)->pluck('slug')->first();
+    }
+}
+
+if(!function_exists('activeOrganizations')) {
+    function activeOrganizations() {
+        return Organization::active()->oldest('name')->select('id','name')->get();
+    }
+}
+
+if(!function_exists('financialYears')) {
+    function financialYears() {
+        return FinancialYear::latest('financial_year')->select('id','financial_year')->get();
+    }
+}
+
+if(!function_exists('getActiveAdmins')) {
+    function getActiveAdmins() {
+        return User::active()->admin()->select('id','name')->get();
+    }
+}
+
+if(!function_exists('auditAuditorsToArray')) {
+    function auditAuditorsToArray($audit_id = null) {
+        return AuditAuditor::where('audit_id',$audit_id)->pluck('user_id')->toArray() ?? [];
+    }
+}
+
+if(!function_exists('auditSupervisorsToArray')) {
+    function auditSupervisorsToArray($audit_id = null) {
+        return AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id')->toArray() ?? [];
     }
 }

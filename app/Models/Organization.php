@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Traits\ModelHelper;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AuditStepQuestion extends Model
+class Organization extends Model
 {
     use HasFactory, SoftDeletes, ModelHelper;
-    protected $table = "audit_step_questions";
+    protected $table = 'organizations';
     protected $guarded = [];
 }

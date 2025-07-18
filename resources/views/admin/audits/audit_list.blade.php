@@ -20,51 +20,40 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <x-sort-available />
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered mb-0 text-nowrap">
                             <thead class="table-light">
                             <tr>
-                                <th class="text-center">Step no.</th>
+                                <th class="text-center">Audit no.</th>
                                 <th>Title</th>
-                                <th>ISA Reference</th>
-                                <th class="text-center">Question Count</th>
+                                <th class="text-center">F.Y</th>
+                                <th>Organization</th>
+                                <th>Current Status</th>
                                 <th class="text-center">Active Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
-                            <tbody class="sort_section">
-                            @forelse($steps as $step)
-                                <tr data-id="{{ $step->id }}">
-                                    <td class="text-center sorting-serial handle">{{ $step->step_no }}</td>
-                                    <td>{{ $step->title ?? '' }}</td>
-                                    <td>{{ textLimit($step->isa_reference) ?? '' }}</td>
+                            <tbody>
+                            @forelse($audits as $audit)
+                                <tr>
+                                    <td class="text-center">{{ $audit->audit_number }}</td>
+                                    <td>{{ $audit->title ?? '' }}</td>
+                                    <td class="text-center">{{ $audit->financial_year->financial_year ?? '' }}</td>
+                                    <td>{{ $audit->organization->name ?? '' }}</td>
+                                    <td>{{ ucFirst($audit->workflow_status) ?? '' }}</td>
                                     <td class="text-center">
-                                        {{ $step?->questions?->count() ?? 0 }}
-                                        <a class="btn btn-info btn-sm" href="{{ route('admin.question-list',$step->slug) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Question List">
-                                            <i class="fa fa-question"></i>
-                                        </a>
+                                        <input type="checkbox" id="audit-{{ $loop->index + 1 }}" class="audit-status" data-id="{{ $audit->id }}" switch="bool" {{ isActive($audit->status) ? 'checked' : '' }} />
+                                        <label class="custom-label-margin" for="audit-{{ $loop->index + 1 }}" data-on-label="Yes" data-off-label="No"></label>
                                     </td>
                                     <td class="text-center">
-                                        <input type="checkbox" id="step-{{ $loop->index + 1 }}" class="step-status" data-id="{{ $step->id }}" switch="bool" {{ isActive($step->status) ? 'checked' : '' }} />
-                                        <label class="custom-label-margin" for="step-{{ $loop->index + 1 }}" data-on-label="Yes" data-off-label="No"></label>
-                                    </td>
-                                    <td class="text-center">
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Show Details"
+                                           href="{{ route('admin.audits.show',$audit->slug) }}"
+                                           class="btn btn-sm btn-soft-info"><i class="fa fa-eye"></i></a>
+                                        @if($audit->workflow_status === 'draft')   
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
-                                           href="{{ route('admin.audit-steps.edit',$step->slug) }}"
-                                           class="btn btn-sm btn-soft-success"><i class="fa fa-edit"></i></a>
-                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"
-                                           class="btn btn-sm btn-soft-danger delete-data"
-                                           data-id="{{ 'delete-step-'.$step->id }}"
-                                           href="javascript:void(0);">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                        <form id="delete-step-{{ $step->id }}"
-                                              action="{{ route('admin.audit-steps.destroy',$step->id) }}"
-                                              method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
+                                           href="{{ route('admin.audits.edit',$audit->slug) }}"
+                                           class="btn btn-sm btn-soft-success"><i class="fa fa-edit"></i></a>  
+                                        @endif 
                                     </td>
                                 </tr>
                             @empty
@@ -80,5 +69,5 @@
 @endsection
 
 @push('js')
-        <script src="{{ asset('assets/admin/js/custom/step_list.js') }}"></script>
+        <script src="{{ asset('assets/admin/js/custom/audit_list.js') }}"></script>
 @endpush

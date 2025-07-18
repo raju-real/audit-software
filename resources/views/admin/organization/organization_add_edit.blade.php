@@ -1,14 +1,14 @@
 @extends('admin.layouts.app')
-@section('title','Company Add/Edit')
+@section('title','Organization Add/Edit')
 @push('css') @endpush
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Add/Edit Company</h4>
+                <h4 class="mb-sm-0 font-size-18">Add/Edit Organization</h4>
                 <div class="page-title-right">
-                    <a href="{{ route('admin.companies.index') }}"
+                    <a href="{{ route('admin.organizations.index') }}"
                        class="btn btn-sm btn-outline-primary">
                         <i class="fa fa-arrow-circle-left"></i> Back
                     </a>
@@ -22,9 +22,9 @@
             <div class="card">
                 <div class="card-body">
                     <form action="{{ $route }}" method="POST" id="prevent-form">
-                        <input type="hidden" id="method_mode" value="{{ isset($company) ? 'PUT' : 'POST' }}">
+                        <input type="hidden" id="method_mode" value="{{ isset($organization) ? 'PUT' : 'POST' }}">
                         @csrf
-                        @isset($company)
+                        @isset($organization)
                             @method('PUT')
                         @endisset
                         <div class="row">
@@ -32,7 +32,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Name {!! starSign() !!}</label>
                                     <input type="text" name="name"
-                                           value="{{ old('name') ?? $company->name ?? '' }}"
+                                           value="{{ old('name') ?? $organization->name ?? '' }}"
                                            class="form-control {{ hasError('name') }}"
                                            placeholder="Name">
                                     @error('name')
@@ -45,7 +45,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Email {!! starSign() !!}</label>
                                     <input type="text" name="email"
-                                           value="{{ old('email') ?? $company->email ?? '' }}"
+                                           value="{{ old('email') ?? $organization->email ?? '' }}"
                                            class="form-control {{ hasError('email') }}"
                                            placeholder="Email">
                                     @error('email')
@@ -58,7 +58,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Mobile {!! starSign() !!}</label>
                                     <input type="text" name="mobile"
-                                           value="{{ old('mobile') ?? $company->mobile ?? '' }}"
+                                           value="{{ old('mobile') ?? $organization->mobile ?? '' }}"
                                            class="form-control {{ hasError('mobile') }}"
                                            placeholder="Mobile">
                                     @error('mobile')
@@ -70,7 +70,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Phone</label>
                                     <input type="text" name="phone"
-                                           value="{{ old('phone') ?? $company->phone ?? '' }}"
+                                           value="{{ old('phone') ?? $organization->phone ?? '' }}"
                                            class="form-control {{ hasError('phone') }}"
                                            placeholder="Phone">
                                     @error('phone')
@@ -83,7 +83,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Contact Person Name {!! starSign() !!}</label>
                                     <input type="text" name="contact_person_name"
-                                           value="{{ old('contact_person_name') ?? $company->contact_person_name ?? '' }}"
+                                           value="{{ old('contact_person_name') ?? $organization->contact_person_name ?? '' }}"
                                            class="form-control {{ hasError('contact_person_name') }}"
                                            placeholder="Contact Person Name">
                                     @error('contact_person_name')
@@ -95,7 +95,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Contact Person Mobile {!! starSign() !!}</label>
                                     <input type="text" name="contact_person_mobile"
-                                           value="{{ old('contact_person_mobile') ?? $company->contact_person_mobile ?? '' }}"
+                                           value="{{ old('contact_person_mobile') ?? $organization->contact_person_mobile ?? '' }}"
                                            class="form-control {{ hasError('contact_person_mobile') }}"
                                            placeholder="Contact Person Mobile">
                                     @error('contact_person_mobile')
@@ -107,7 +107,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Address {!! starSign() !!}</label>
-                                    <textarea name="address" class="form-control {{ hasError('address') }}" placeholder="Address">{{ old('address') ?? $company->address ?? '' }}</textarea>
+                                    <textarea name="address" class="form-control {{ hasError('address') }}" placeholder="Address">{{ old('address') ?? $organization->address ?? '' }}</textarea>
                                     @error('address')
                                     {!! displayError($message) !!}
                                     @enderror
@@ -117,7 +117,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Description</label>
-                                    <textarea name="description" class="form-control {{ hasError('description') }}" placeholder="Description">{{ old('description') ?? $company->description ?? '' }}</textarea>
+                                    <textarea name="description" class="form-control {{ hasError('description') }}" placeholder="Description">{{ old('description') ?? $organization->description ?? '' }}</textarea>
                                     @error('description')
                                     {!! displayError($message) !!}
                                     @enderror
@@ -131,7 +131,7 @@
                                             class="form-select select2-search-disable {{ hasError('status') }}">
                                         @foreach(getStatus() as $status)
                                             <option
-                                                value="{{ $status->value }}" {{ (old('status') === $status->value || (isset($company) && $company->status === $status->value && empty(old('status')))) ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                value="{{ $status->value }}" {{ (old('status') === $status->value || (isset($organization) && $organization->status === $status->value && empty(old('status')))) ? 'selected' : '' }}>{{ $status->title }}</option>
                                         @endforeach
                                     </select>
                                     @error('status')

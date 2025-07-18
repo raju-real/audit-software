@@ -50,15 +50,15 @@
             </ul>
         </li>
 
-        <li class="{{ isMainMenuActive('companies,financial-years') }}">
+        <li class="{{ isMainMenuActive('organizations,financial-years') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class='bx  bx-polygon'  ></i>   
-                <span>Company/F.Y</span>
+                <span>Organization/F.Y</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
                 <li>
-                    <a href="{{ route('admin.companies.index') }}" class="{{ isSubMenuActive('companies') }}">
-                        <i class="bx bx-chevron-right"></i> Company List
+                    <a href="{{ route('admin.organizations.index') }}" class="{{ isSubMenuActive('organizations') }}">
+                        <i class="bx bx-chevron-right"></i> Organization List
                     </a>
                 </li>
                 <li>

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('audit_id');
             $table->integer('audit_step_id');
             $table->integer('question_id');
+            $table->integer('sorting_serial');
             $table->string('closed_ended_answer')->nullable();
             $table->string('text_answer')->nullable();
             $table->string('documents',1000)->nullable();

@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\AdminLogin;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\StaffController;
-use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\FinancialYearController;
@@ -29,13 +29,13 @@ Route::post('admin-login', AdminLogin::class)->middleware('throttle:5,1')->name(
 
 Route::view('permission-denied', 'admin.permission_denied')->name('permission-denied');
 
-Route::controller(TwoFactorController::class)->middleware('auth')->group(function() {
+Route::controller(TwoFactorController::class)->middleware('auth')->group(function () {
     Route::get('/2fa/verify', 'show')->name('admin.2fa.verify');
     Route::post('/2fa/verify', 'verify')->name('admin.2fa.verify.post');
 });
 
-Route::group(['as' => 'admin.', 'middleware' => ['auth','2fa.verified']], function () {
-    
+Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], function () {
+
     Route::controller(DashboardController::class)->group(function () {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });
@@ -68,14 +68,17 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth','2fa.verified']], functi
         Route::put('update-question-status/{id}', 'updateQuestionStatus')->name('update-question-status');
         Route::post('sort-questions', 'sortQuestions')->name('sort-questions');
     });
-    Route::resource('companies', CompanyController::class);
-    Route::controller(CompanyController::class)->group(function () {
-        Route::put('update-company-status/{id}', 'updateCompanyStatus')->name('update-company-status');
+    Route::resource('organizations', OrganizationController::class);
+    Route::controller(OrganizationController::class)->group(function () {
+        Route::put('update-organization-status/{id}', 'updateOrganizationStatus')->name('update-organization-status');
     });
     Route::resource('financial-years', FinancialYearController::class);
     // Only for administrator
     Route::middleware('administrator')->group(function () {
         Route::resource('audits', AuditController::class);
+        Route::controller(AuditController::class)->group(function () {
+            Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
+        });
         // Settings
         Route::controller(SettingController::class)->group(function () {
             Route::get('site-settings', 'siteSettings')->name('site-settings');
