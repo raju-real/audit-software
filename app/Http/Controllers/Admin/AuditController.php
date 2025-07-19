@@ -96,15 +96,16 @@ class AuditController extends Controller
             foreach($audit_steps as $step) {
                 $audit_step_pair = new AuditAndStepPair();
                 $audit_step_pair->audit_id = $audit->id;
-                $audit_step_pair->step_id = $step->id;
+                $audit_step_pair->audit_step_id = $step->id;
                 $audit_step_pair->step_no = $step->step_no;
                 $audit_step_pair->save();
                 // Save audit and step and questions pairs
-                $step_questions = AuditStepQuestion::active()->sort()->select('id','audit_step_id','sorting_serial')->get();
+                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id','audit_step_id','sorting_serial')->get();
                 foreach($step_questions as $question) {
                     $step_question_pair = new AuditAndStepQuestionPair();
                     $step_question_pair->audit_id = $audit->id;
                     $step_question_pair->audit_step_id = $step->id;
+                    $step_question_pair->audit_step_pair_id = $audit_step_pair->id;
                     $step_question_pair->question_id = $question->id;
                     $step_question_pair->sorting_serial = $question->sorting_serial;
                     $step_question_pair->save();
@@ -193,21 +194,22 @@ class AuditController extends Controller
 
             // Save audit and step pairs
             AuditAndStepPair::whereIn('audit_id', array($audit->id))->delete();
+            AuditAndStepQuestionPair::whereIn('audit_id', array($audit->id))->delete();
+
             $audit_steps = AuditStep::active()->oldest('step_no')->select('id','step_no')->get();
             foreach($audit_steps as $step) {
                 $audit_step_pair = new AuditAndStepPair();
                 $audit_step_pair->audit_id = $audit->id;
-                $audit_step_pair->step_id = $step->id;
+                $audit_step_pair->audit_step_id = $step->id;
                 $audit_step_pair->step_no = $step->step_no;
                 $audit_step_pair->save();
-
                 // Save audit and step and questions pairs
-                AuditAndStepQuestionPair::whereIn('audit_id', array($audit->id))->delete();
-                $step_questions = AuditStepQuestion::active()->sort()->select('id','audit_step_id','sorting_serial')->get();
+                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id','audit_step_id','sorting_serial')->get();
                 foreach($step_questions as $question) {
                     $step_question_pair = new AuditAndStepQuestionPair();
                     $step_question_pair->audit_id = $audit->id;
                     $step_question_pair->audit_step_id = $step->id;
+                    $step_question_pair->audit_step_pair_id = $audit_step_pair->id;
                     $step_question_pair->question_id = $question->id;
                     $step_question_pair->sorting_serial = $question->sorting_serial;
                     $step_question_pair->save();

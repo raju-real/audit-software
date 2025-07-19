@@ -430,3 +430,23 @@ if(!function_exists('auditSupervisorsToArray')) {
         return AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id')->toArray() ?? [];
     }
 }
+
+if (!function_exists('isStepActive')) {
+    /**
+     * Determine if a step should be active based on step number and previous step's status
+     *
+     * @param \Illuminate\Support\Collection $steps
+     * @param int $index
+     * @return bool
+     */
+    function isStepActive($steps, $index) {
+        if ($index === 0) {
+            return true; // First step is always active
+        }
+
+        $previousStep = $steps[$index - 1] ?? null;
+
+        return $previousStep && $previousStep->status === 'reviewed';
+    }
+}
+

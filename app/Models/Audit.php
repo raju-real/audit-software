@@ -13,39 +13,62 @@ class Audit extends Model
     protected $table = 'audits';
     protected $guarded = [];
 
-    public function financial_year() {
-        return $this->belongsTo(FinancialYear::class,'financial_year_id','id');
+    public function financial_year()
+    {
+        return $this->belongsTo(FinancialYear::class, 'financial_year_id', 'id');
     }
 
-    public function organization() {
-        return $this->belongsTo(Organization::class,'organization_id','id');
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id', 'id');
     }
 
-    public function scopeDraft($query) {
+    public function audit_steps() {
+        return $this->hasMany(AuditAndStepPair::class,'audit_id', 'id');
+    }
+
+    public function auditors()
+    {
+        return $this->hasMany(AuditAuditor::class, 'audit_id', 'id');
+    }
+
+    public function supervisors()
+    {
+        return $this->hasMany(AuditSupervisor::class, 'audit_id', 'id');
+    }
+
+    public function scopeDraft($query)
+    {
         return $query->where('workflow_status', 'draft');
     }
 
-    public function scopeOngoing($query) {
+    public function scopeOngoing($query)
+    {
         return $query->where('workflow_status', 'ongoing');
     }
 
-    public function scopeReviewed($query) {
+    public function scopeReviewed($query)
+    {
         return $query->where('workflow_status', 'reviewed');
     }
 
-    public function scopeApproved($query) {
+    public function scopeApproved($query)
+    {
         return $query->where('workflow_status', 'approved');
     }
 
-    public function scopeRejected($query) {
+    public function scopeRejected($query)
+    {
         return $query->where('workflow_status', 'rejected');
     }
 
-    public function scopeComplete($query) {
+    public function scopeComplete($query)
+    {
         return $query->where('workflow_status', 'complete');
     }
 
-    public function scopeClosed($query) {
+    public function scopeClosed($query)
+    {
         return $query->where('workflow_status', 'closed');
     }
 

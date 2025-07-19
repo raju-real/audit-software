@@ -6,6 +6,8 @@
                 <span>Dashboard</span>
             </a>
         </li>
+
+
         <li class="{{ isMainMenuActive('audits') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class='bx  bx-folder-open'></i> 
@@ -24,6 +26,26 @@
                 </li>
             </ul>
         </li>
+
+        <li class="{{ isMainMenuActive('auditor-audits') }}">
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class='bx  bx-folder'></i>  
+                <span>My Audit</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.auditor-audits') }}" class="{{ isSubMenuActive('auditor-audits') }}">
+                        <i class="bx bx-chevron-right"></i> As Auditor
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.audits.create') }}" class="{{ isSubMenuActive('audits') }}">
+                        <i class="bx bx-chevron-right"></i> As Supervisor
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <li>
             <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
                 <i class="bx bx-list-ol"></i>

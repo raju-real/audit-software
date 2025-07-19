@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Admin\AdminLogin;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\AuditorActivityController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -73,6 +74,13 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::put('update-organization-status/{id}', 'updateOrganizationStatus')->name('update-organization-status');
     });
     Route::resource('financial-years', FinancialYearController::class);
+
+    // ===================================================================
+    // AUDITOR ACTIVITY ROUTES
+    // ===================================================================
+    Route::controller(AuditorActivityController::class)->group(function() {
+        Route::get('auditor-audits','auditList')->name('auditor-audits');
+    });
     // Only for administrator
     Route::middleware('administrator')->group(function () {
         Route::resource('audits', AuditController::class);

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('audit_and_step_pairs', function (Blueprint $table) {
             $table->id();
             $table->integer('audit_id');
-            $table->integer('step_id');
+            $table->integer('audit_step_id');
             $table->integer('step_no');
             $table->enum('status',['ongoing','complete'])->default('ongoing','complete');
             $table->integer('reviewed_by')->nullable();
