@@ -28,7 +28,6 @@
                                     <th class="text-center">F.Y</th>
                                     <th>Organization</th>
                                     <th>Current Status</th>
-                                    <th>Audit Steps</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -40,7 +39,7 @@
                                         <td class="text-center">{{ $audit->financial_year->financial_year ?? '' }}</td>
                                         <td>{{ $audit->organization->name ?? '' }}</td>
                                         <td>{{ ucFirst($audit->workflow_status) ?? '' }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @foreach ($audit->audit_steps as $index => $audit_step)
                                                 <ul class="list-group">
                                                     <li
@@ -60,16 +59,11 @@
                                                     </li>
                                                 </ul>
                                             @endforeach
-                                        </td>
+                                        </td> --}}
                                         <td class="text-center">
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Show Details"
-                                                href="{{ route('admin.audits.show', $audit->slug) }}"
-                                                class="btn btn-sm btn-soft-info"><i class="fa fa-eye"></i></a>
-                                            @if ($audit->workflow_status === 'draft')
-                                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"
-                                                    href="{{ route('admin.audits.edit', $audit->slug) }}"
-                                                    class="btn btn-sm btn-soft-success"><i class="fa fa-edit"></i></a>
-                                            @endif
+                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Steps"
+                                                href="{{ route('admin.auditor-audit-steps', encrypt_decrypt($audit->id,'encrypt')) }}"
+                                                class="btn btn-sm btn-info"><i class="fa fa-tasks"></i></a>
                                         </td>
                                     </tr>
                                 @empty

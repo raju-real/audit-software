@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->enum('status',['active','inactive'])->default("active");
             $table->enum('priority',['low','medium','high','critical'])->default("high");
-            $table->enum('workflow_status',['draft','ongoing','reviewed','approved','rejected','complete','closed'])->default("draft");
+            $table->enum('workflow_status',['draft','ongoing','reviewed','approved','rejected','complete','reopened'])->default("draft");
             $table->string('reference_document')->nullable();
             $table->integer('created_by');
             $table->timestamps();

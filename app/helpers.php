@@ -1,14 +1,15 @@
 <?php
 
+use Dom\Comment;
+use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\AuditAuditor;
-use App\Models\AuditSupervisor;
 use App\Models\Organization;
 use App\Models\FinancialYear;
-use App\Models\User;
-use Carbon\Carbon;
-use Dom\Comment;
+use App\Models\AuditSupervisor;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 
@@ -113,6 +114,17 @@ if (!function_exists('getSureStatus')) {
     function getSureStatus(): array
     {
         return [
+            (object)['value' => 'yes', 'title' => 'Yes'],
+            (object)['value' => 'no', 'title' => 'No']
+        ];
+    }
+}
+
+if (!function_exists('getClosedEnded')) {
+    function getClosedEnded(): array
+    {
+        return [
+            (object)['value' => 'n/a', 'title' => 'N/A'],
             (object)['value' => 'yes', 'title' => 'Yes'],
             (object)['value' => 'no', 'title' => 'No']
         ];
@@ -231,17 +243,30 @@ if (!function_exists('uploadImage')) {
 }
 
 if (!function_exists('uploadFile')) {
-    function uploadFile($file, string $folderName = "partial/"): string
+    function uploadFile($file, string $folderName = "partial/")
     {
-        $folderPath = "assets/files/" . $folderName;
-        $uniqueFileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-        if (!file_exists($folderPath)) {
-            mkdir($folderPath, 0755, true);
+        try {
+            $folderPath = "assets/files/" . trim($folderName, '/');
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0755, true);
+            }
+
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            $uniqueFileName = time() . '_' . Str::slug($originalName) . '.' . $extension;
+
+            if ($file->move($folderPath, $uniqueFileName)) {
+                return $uniqueFileName;
+            }
+        } catch (\Throwable $e) {
+            // Log the error or silently fail
+            Log::error("File upload failed: " . $e->getMessage());
         }
-        $file->move($folderPath, $uniqueFileName);
-        return $uniqueFileName;
+
+        return null;
     }
 }
+
 
 if (!function_exists('segmentOne')) {
     function segmentOne(): ?string
@@ -318,7 +343,9 @@ if (!function_exists('isMainMenuActive')) {
 if (!function_exists('isSubMenuActive')) {
     function isSubMenuActive(string $fieldName): string
     {
-        return request()->segment(1) == $fieldName ? 'active' : '';
+        $sub_menus = explode(',', $fieldName);
+        return in_array(segmentOne(), $sub_menus) ? 'active' : '';
+        // return request()->segment(1) == $fieldName ? 'active' : '';
     }
 }
 
@@ -388,7 +415,9 @@ if (!function_exists('getWorkFlowStatus')) {
             (object)['value' => 'reviewed', 'title' => 'Reviewed'],
             (object)['value' => 'approved', 'title' => 'Approved'],
             (object)['value' => 'rejected', 'title' => 'Rejected'],
-            (object)['value' => 'closed', 'title' => 'Closed']
+            (object)['value' => 'rejected', 'title' => 'Rejected'],
+            (object)['value' => 'complete', 'title' => 'Complete'],
+            (object)['value' => 'reopened', 'title' => 'Reopened']
         ];
     }
 }
@@ -401,33 +430,38 @@ if (!function_exists('stepSlugById')) {
     }
 }
 
-if(!function_exists('activeOrganizations')) {
-    function activeOrganizations() {
-        return Organization::active()->oldest('name')->select('id','name')->get();
+if (!function_exists('activeOrganizations')) {
+    function activeOrganizations()
+    {
+        return Organization::active()->oldest('name')->select('id', 'name')->get();
     }
 }
 
-if(!function_exists('financialYears')) {
-    function financialYears() {
-        return FinancialYear::latest('financial_year')->select('id','financial_year')->get();
+if (!function_exists('financialYears')) {
+    function financialYears()
+    {
+        return FinancialYear::latest('financial_year')->select('id', 'financial_year')->get();
     }
 }
 
-if(!function_exists('getActiveAdmins')) {
-    function getActiveAdmins() {
-        return User::active()->admin()->select('id','name')->get();
+if (!function_exists('getActiveAdmins')) {
+    function getActiveAdmins()
+    {
+        return User::active()->admin()->select('id', 'name')->get();
     }
 }
 
-if(!function_exists('auditAuditorsToArray')) {
-    function auditAuditorsToArray($audit_id = null) {
-        return AuditAuditor::where('audit_id',$audit_id)->pluck('user_id')->toArray() ?? [];
+if (!function_exists('auditAuditorsToArray')) {
+    function auditAuditorsToArray($audit_id = null)
+    {
+        return AuditAuditor::where('audit_id', $audit_id)->pluck('user_id')->toArray() ?? [];
     }
 }
 
-if(!function_exists('auditSupervisorsToArray')) {
-    function auditSupervisorsToArray($audit_id = null) {
-        return AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id')->toArray() ?? [];
+if (!function_exists('auditSupervisorsToArray')) {
+    function auditSupervisorsToArray($audit_id = null)
+    {
+        return AuditSupervisor::where('audit_id', $audit_id)->pluck('user_id')->toArray() ?? [];
     }
 }
 
@@ -439,7 +473,8 @@ if (!function_exists('isStepActive')) {
      * @param int $index
      * @return bool
      */
-    function isStepActive($steps, $index) {
+    function isStepActive($steps, $index)
+    {
         if ($index === 0) {
             return true; // First step is always active
         }
@@ -449,4 +484,3 @@ if (!function_exists('isStepActive')) {
         return $previousStep && $previousStep->status === 'reviewed';
     }
 }
-

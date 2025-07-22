@@ -27,14 +27,14 @@
             </ul>
         </li>
 
-        <li class="{{ isMainMenuActive('auditor-audits') }}">
+        <li class="{{ isMainMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class='bx  bx-folder'></i>  
                 <span>My Audit</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
                 <li>
-                    <a href="{{ route('admin.auditor-audits') }}" class="{{ isSubMenuActive('auditor-audits') }}">
+                    <a href="{{ route('admin.auditor-audits') }}" class="{{ isSubMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions') }}">
                         <i class="bx bx-chevron-right"></i> As Auditor
                     </a>
                 </li>

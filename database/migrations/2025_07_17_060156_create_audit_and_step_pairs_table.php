@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('audit_id');
             $table->integer('audit_step_id');
             $table->integer('step_no');
-            $table->enum('status',['ongoing','complete'])->default('ongoing','complete');
+            $table->enum('status', ['draft','ongoing','reviewed','approved','rejected','returned'])->default('draft');
             $table->integer('reviewed_by')->nullable();
             $table->timestamps();
         });

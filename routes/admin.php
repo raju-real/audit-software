@@ -80,6 +80,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
     // ===================================================================
     Route::controller(AuditorActivityController::class)->group(function() {
         Route::get('auditor-audits','auditList')->name('auditor-audits');
+        Route::get('auditor-audit-steps/{audit_id}','auditSteps')->name('auditor-audit-steps');
+        Route::get('auditor-step-questions/{step_id}','stepQuestions')->name('auditor-step-questions');
+        Route::put('submit-answer/{step_id}','submitAnswer')->name('submit-answer');
     });
     // Only for administrator
     Route::middleware('administrator')->group(function () {
