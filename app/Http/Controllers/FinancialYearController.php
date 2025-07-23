@@ -12,13 +12,13 @@ class FinancialYearController extends Controller
     public function index()
     {
         $financial_years = FinancialYear::latest()->paginate(20);
-        return view('admin.company.financial_year_list', compact('financial_years'));
+        return view('admin.organization.financial_year_list', compact('financial_years'));
     }
 
     public function create()
     {
         $route = route('admin.financial-years.store');
-        return view('admin.company.financial_year_add_edit', compact('route'));
+        return view('admin.organization.financial_year_add_edit', compact('route'));
     }
 
     public function store(Request $request)
@@ -52,7 +52,7 @@ class FinancialYearController extends Controller
     {
         $financial_year = FinancialYear::findOrFail(encrypt_decrypt($id, 'decrypt'));
         $route = route('admin.financial-years.update', $financial_year->id);
-        return view('admin.company.financial_year_add_edit', compact('financial_year', 'route'));
+        return view('admin.organization.financial_year_add_edit', compact('financial_year', 'route'));
     }
 
 

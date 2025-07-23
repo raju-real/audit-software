@@ -23,4 +23,12 @@ class AuditAndStepPair extends Model
     public function audit_step_info() {
         return $this->belongsTo(AuditStep::class,'audit_step_id','id');
     }
+
+    public function audit_user() {
+        return $this->belongsTo(User::class,'audit_by','id');
+    }
+
+    public function supervisor_user() {
+        return $this->belongsTo(User::class,'reviewed_by','id');
+    }
 }

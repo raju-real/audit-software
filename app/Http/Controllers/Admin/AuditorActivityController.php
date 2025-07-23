@@ -50,8 +50,11 @@ class AuditorActivityController extends Controller
         $steps = AuditAndStepPair::with([
             'audit_step_info' => function ($audit_step) {
                 $audit_step->select('id', 'step_no', 'title', 'slug', 'isa_reference');
+            },
+            'audit_user' => function($user) {
+                $user->select('id','name','mobile','email');
             }
-        ])->where("audit_id", $audit->id)->select('id', 'audit_id', 'audit_step_id', 'step_no', 'status', 'reviewed_by')->orderBy('step_no')->get();
+        ])->where("audit_id", $audit->id)->select('id', 'audit_id', 'audit_step_id', 'step_no', 'status', 'audit_by', 'reviewed_by')->orderBy('step_no')->get();
         return view('admin.audits.auditor_audit_steps', compact('audit', 'steps'));
     }
 
@@ -80,7 +83,7 @@ class AuditorActivityController extends Controller
                     }
                 ]);
                 $step_question->sort();
-            },
+            }
         ])->findOrFail(encrypt_decrypt($step_id, 'decrypt'));
 
         return view('admin.audits.auditor_audit_step_questions', compact('step_info'));
@@ -119,6 +122,7 @@ class AuditorActivityController extends Controller
 
                     if($step_answer->save()) {
                         $step_info->status = 'ongoing';
+                        $step_info->audit_by = Auth::id();
                         $step_info->save();
                     }
                 }
