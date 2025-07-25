@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="{{ asset('assets/common/datetimepicker/css/tempusdominus-bootstrap-4.min.css') }}"
         crossorigin="anonymous" />
 
+    {{-- Slim select     --}}
+    <link href="{{ asset('assets/admin/partial/css/slimselect.min.css') }}" rel="stylesheet">
+
     <link href="{{ asset('assets/admin/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/admin/css/custom.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     @stack('css')
@@ -191,9 +194,15 @@
     <script src="{{ asset('assets/common/datetimepicker/js/moment-timezone-with-data.min.js') }}"></script>
     <script src="{{ asset('assets/common/datetimepicker/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/common/datetimepicker/js/custom_picker.js') }}"></script>
-    {{-- Custom created js--}}
+    <script src="{{ asset('assets/admin/partial/js/form_validation.js') }}"></script>
+    {{-- Slim Select  --}}
+    <script src="{{ asset('assets/admin/partial/js/slimselect.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/partial/js/slimselect.js') }}"></script>
+
+
+    {{-- Custom created js --}}
     <script src="{{ asset('assets/admin/js/helpers.js') }}"></script>
-    {{-- Page wise js--}}
+    {{-- Page wise js --}}
     <script src="{{ asset('assets/admin/js/common.js') }}"></script>
     <script src="{{ asset('assets/admin/js/app.js') }}"></script>
 

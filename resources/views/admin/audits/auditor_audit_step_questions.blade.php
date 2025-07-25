@@ -72,7 +72,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <form action="{{ route('admin.submit-answer', encrypt_decrypt($step_info->id, 'encrypt')) }}"
-                            enctype="multipart/form-data" method="POST">
+                            enctype="multipart/form-data" method="POST" class="needs-validation" novalidate>
                             @csrf
                             @method('PUT')
                             <table class="table table-bordered table-striped table-responsive-md w-100">
@@ -97,14 +97,14 @@
                                         <tr>
                                             <td class="text-center">
                                                 <input type="hidden" name="step_question_id[]"
-                                                    value="{{ $step_question->id }}">
+                                                    value="{{ $step_question->id }}" required>
                                                 {{ $step_question->sorting_serial ?? '' }}
                                             </td>
                                             <td>{{ $step_question->question->question ?? 'Question ?' }}</td>
                                             {{-- Closed Ended Answer --}}
                                             <td>
                                                 <select name="closed_ended_answer[]"
-                                                    class="form-select select2-search-disable {{ hasError('closed_ended_answer.' . $index) }}">
+                                                    class="form-select select2-search-disable {{ hasError('closed_ended_answer.' . $index) }}" required>
                                                     @foreach (getClosedEnded() as $status)
                                                         <option value="{{ $status->value }}"
                                                             {{ (old('closed_ended_answer.' . $index) ?? $step_question->closed_ended_answer) == $status->value ? 'selected' : '' }}>
@@ -119,16 +119,19 @@
 
                                             {{-- Text Answer --}}
                                             <td>
-                                                <textarea name="text_answer[]" class="form-control" placeholder="Answer">{{ old('text_answer.' . $index) ?? ($step_question->text_answer ?? '') }}</textarea>
+                                                <textarea name="text_answer[]" class="form-control" placeholder="Answer" {{ $step_question->question->is_text_answer_required == 'yes' ? 'required' : '' }}>{{ old('text_answer.' . $index) ?? ($step_question->text_answer ?? '') }}</textarea>
                                             </td>
 
                                             {{-- File Upload --}}
                                             <td>
                                                 <input type="file" name="documents[]" class="form-control"
-                                                    accept=".jpg,.jpeg,.png,.pdf" multiple>
+                                                    accept=".jpg,.jpeg,.png,.pdf" {{ $step_question->question->is_text_document_required == 'yes' ? 'required' : '' }}>
                                                 @error('documents.' . $index)
                                                     {!! displayError($message) !!}
                                                 @enderror
+                                                {{-- @error('documents')
+                                                    {!! displayError($message) !!}
+                                                @enderror --}}
                                             </td>
                                         </tr>
                                     @empty

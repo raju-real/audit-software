@@ -23,8 +23,9 @@ class Audit extends Model
         return $this->belongsTo(Organization::class, 'organization_id', 'id');
     }
 
-    public function audit_steps() {
-        return $this->hasMany(AuditAndStepPair::class,'audit_id', 'id');
+    public function audit_steps()
+    {
+        return $this->hasMany(AuditAndStepPair::class, 'audit_id', 'id');
     }
 
     public function auditors()
@@ -89,5 +90,36 @@ class Audit extends Model
             Audit::getAuditNo();
         }
         return $newAuditNo;
+    }
+
+    // In App\Models\Audit.php
+
+    public function scopeWithAuditSteps($query)
+    {
+        return $query->with([
+            'audit_steps' => function ($audit_step) {
+                $audit_step->select('id', 'audit_id', 'audit_step_id', 'step_no', 'audit_by', 'reviewed_by', 'status')
+                    ->with([
+                        'audit_step_questions' => function ($step_question) {
+                            $step_question->select('id', 'audit_step_pair_id', 'audit_step_id', 'audit_id', 'question_id', 'sorting_serial', 'closed_ended_answer', 'text_answer', 'documents');
+                            $step_question->with([
+                                'question' => function ($question) {
+                                    $question->select('id', 'question', 'is_closed_ended', 'is_boolean_answer_required', 'has_text_answer', 'is_text_answer_required', 'has_document', 'is_document_required', 'sorting_serial');
+                                }
+                            ]);
+                            $step_question->sort();
+                        },
+                        'audit_step_info' => function ($step_info) {
+                            $step_info->select('id', 'step_no', 'title', 'slug', 'isa_reference');
+                        }
+                    ]);
+
+                if (request()->has('status')) {
+                    $audit_step->where('status', request()->has('status'));
+                }
+
+                $audit_step->orderBy('step_no');
+            }
+        ]);
     }
 }
