@@ -41,7 +41,7 @@
                                         @if (isStepActive($audit->audit_steps, $index))
                                             @if ($step->status !== 'draft')
                                                 <a data-bs-toggle="tooltip" data-bs-placement="top" title="Show Details"
-                                                   href="" class="btn btn-sm btn-info"><i
+                                                   href="{{ route('admin.auditor-step-details', encrypt_decrypt($step->id,'encrypt')) }}" class="btn btn-sm btn-info"><i
                                                         class="fa fa-eye"></i></a>
                                             @endif
                                             @if ($step->status === 'draft' || $step->status === 'ongoing' || $step->status === 'returned')

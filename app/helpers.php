@@ -256,7 +256,7 @@ if (!function_exists('uploadFile')) {
             $uniqueFileName = time() . '_' . Str::slug($originalName) . '.' . $extension;
 
             if ($file->move($folderPath, $uniqueFileName)) {
-                return $uniqueFileName;
+                return $folderPath . "/" . $uniqueFileName;
             }
         } catch (\Throwable $e) {
             // Log the error or silently fail
@@ -394,6 +394,13 @@ if (!function_exists('authUser')) {
 
 // Project related
 
+if (!function_exists('authUserRole')) {
+    function authUserRole()
+    {
+        return Auth::check() ? Auth::user()->role : null;
+    }
+}
+
 if (!function_exists('getPriorityStatus')) {
     function getPriorityStatus(): array
     {
@@ -410,14 +417,27 @@ if (!function_exists('getWorkFlowStatus')) {
     function getWorkFlowStatus(): array
     {
         return [
-            (object)['value' => 'draft', 'title' => 'Draft'],
-            (object)['value' => 'ongoing', 'title' => 'Ongoing'],
-            (object)['value' => 'reviewed', 'title' => 'Reviewed'],
-            (object)['value' => 'approved', 'title' => 'Approved'],
-            (object)['value' => 'rejected', 'title' => 'Rejected'],
+            (object)['value' => 'draft',    'title' => 'Draft'],
+            // (object)['value' => 'ongoing',  'title' => 'Ongoing'],
+            // (object)['value' => 'reviewed', 'title' => 'Reviewed'],
+            // (object)['value' => 'approved', 'title' => 'Approved'],
             (object)['value' => 'rejected', 'title' => 'Rejected'],
             (object)['value' => 'complete', 'title' => 'Complete'],
             (object)['value' => 'reopened', 'title' => 'Reopened']
+        ];
+    }
+}
+
+if (!function_exists('getAuditStepStatus')) {
+    function getAuditStepStatus(): array
+    {
+        return [
+            (object)['value' => 'draft',    'title' => 'Draft'],
+            (object)['value' => 'ongoing',  'title' => 'Ongoing'],
+            (object)['value' => 'returned',  'title' => 'Returned'],
+            // (object)['value' => 'reviewed', 'title' => 'Reviewed'],
+            (object)['value' => 'approved', 'title' => 'Approved'],
+            (object)['value' => 'rejected', 'title' => 'Rejected']
         ];
     }
 }
@@ -433,7 +453,7 @@ if (!function_exists('stepSlugById')) {
 if (!function_exists('activeOrganizations')) {
     function activeOrganizations()
     {
-        return Organization::active()->oldest('name')->select('id', 'name')->get();
+        return Organization::active()->oldest('name')->select('id', 'name', 'slug')->get();
     }
 }
 
@@ -481,6 +501,25 @@ if (!function_exists('isStepActive')) {
 
         $previousStep = $steps[$index - 1] ?? null;
 
-        return $previousStep && $previousStep->status === 'reviewed';
+        //return $previousStep && $previousStep->status === 'reviewed';
+        return $previousStep && $previousStep->status === 'approved';
     }
 }
+
+if(! function_exists('auditWiseAuditors')) {
+    function auditWiseAuditors($audit_id = null) {
+        $auditors = AuditAuditor::where('audit_id',$audit_id)->pluck('user_id');
+        $users = User::whereIn('id',$auditors)->pluck('name')->toArray();
+        return implode(', ',$users);
+    }
+}
+
+if(! function_exists('auditWiseSupervisors')) {
+    function auditWiseSupervisors($audit_id = null) {
+        $auditors = AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id');
+        $users = User::whereIn('id',$auditors)->pluck('name')->toArray();
+        return implode(', ',$users);
+    }
+}
+
+

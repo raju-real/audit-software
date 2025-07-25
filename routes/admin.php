@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AuditStepController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\StepQuestionController;
+use App\Http\Controllers\Admin\SupervisorActivityController;
 use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Admin\TwoFactorSetupController;
 
@@ -83,7 +84,19 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::get('auditor-audit-steps/{audit_id}','auditSteps')->name('auditor-audit-steps');
         Route::get('auditor-step-questions/{step_id}','stepQuestions')->name('auditor-step-questions');
         Route::put('submit-answer/{step_id}','submitAnswer')->name('submit-answer');
+        Route::get('auditor-step-details/{step_id}','stepDetails')->name('auditor-step-details');
     });
+    // ===================================================================
+    // Supervisor ACTIVITY ROUTES
+    // ===================================================================
+    Route::controller(SupervisorActivityController::class)->group(function() {
+        Route::get('supervisor-audits','auditList')->name('supervisor-audits');
+        Route::get('supervisor-audit-steps/{audit_id}','auditSteps')->name('supervisor-audit-steps');
+        Route::get('review-step-answer/{step_id}','reviewStepAnswer')->name('review-step-answer');
+        Route::get('supervised-step-status','changeStatus')->name('supervised-step-status');
+    });
+
+
     // Only for administrator
     Route::middleware('administrator')->group(function () {
         Route::resource('audits', AuditController::class);

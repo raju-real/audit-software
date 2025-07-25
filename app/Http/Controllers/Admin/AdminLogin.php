@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\TrustedDevice;
 use App\Http\Controllers\Controller;
@@ -39,12 +40,14 @@ class AdminLogin extends Controller
             }
 
             // Trigger 2FA
-            $user->two_factor_code = rand(100000, 999999);
+            $two_factor_code = rand(100000, 999999);
+            $user->two_factor_code = $two_factor_code;
             $user->two_factor_expires_at = now()->addMinutes(10);
             $user->save();
 
             // Send 2FA code via email or SMS here
-            // Mail::to($user)->send(new TwoFactorCodeMail($user));
+            $message = $two_factor_code.' is your 2fa authentication code';
+            User::sendMessage($user->mobile,$message);
 
             return redirect()->route('admin.2fa.verify');
         }

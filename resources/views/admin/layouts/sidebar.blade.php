@@ -7,10 +7,10 @@
             </a>
         </li>
 
-
+        @if(authUserRole() == 'administrator')
         <li class="{{ isMainMenuActive('audits') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                <i class='bx  bx-folder-open'></i> 
+                <i class='bx  bx-folder-open'></i>
                 <span>Manage Audit</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
@@ -26,33 +26,43 @@
                 </li>
             </ul>
         </li>
+        @endif
 
-        <li class="{{ isMainMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions') }}">
-            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                <i class='bx  bx-folder'></i>  
-                <span>My Audit</span>
-            </a>
-            <ul class="sub-menu" aria-expanded="false">
-                <li>
-                    <a href="{{ route('admin.auditor-audits') }}" class="{{ isSubMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions') }}">
-                        <i class="bx bx-chevron-right"></i> As Auditor
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.audits.create') }}" class="{{ isSubMenuActive('audits') }}">
-                        <i class="bx bx-chevron-right"></i> As Supervisor
-                    </a>
-                </li>
-            </ul>
-        </li>
+        @if (authUserRole() !== 'administrator')
+            <li
+                class="{{ isMainMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer,auditor-step-details') }}">
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class='bx  bx-folder'></i>
+                    <span>My Audit</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.auditor-audits') }}"
+                            class="{{ isSubMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,auditor-step-details') }}">
+                            <i class="bx bx-chevron-right"></i> As Auditor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.supervisor-audits') }}"
+                            class="{{ isSubMenuActive('supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer') }}">
+                            <i class="bx bx-chevron-right"></i> As Supervisor
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
 
+        @if(authUserRole() == 'administrator')
         <li>
-            <a href="{{ route('admin.audit-steps.index') }}" class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
+            <a href="{{ route('admin.audit-steps.index') }}"
+                class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
                 <i class="bx bx-list-ol"></i>
                 <span>Audit Steps</span>
             </a>
         </li>
+        @endif
 
+        @if(authUserRole() == 'administrator')
         <li class="{{ isMainMenuActive('designations,staffs') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class="bx bx-user"></i>
@@ -71,10 +81,12 @@
                 </li>
             </ul>
         </li>
+        @endif
 
+        @if(authUserRole() == 'administrator')
         <li class="{{ isMainMenuActive('organizations,financial-years') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                <i class='bx  bx-polygon'  ></i>   
+                <i class='bx  bx-polygon'></i>
                 <span>Organization/F.Y</span>
             </a>
             <ul class="sub-menu" aria-expanded="false">
@@ -84,13 +96,16 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.financial-years.index') }}" class="{{ isSubMenuActive('financial-years') }}">
+                    <a href="{{ route('admin.financial-years.index') }}"
+                        class="{{ isSubMenuActive('financial-years') }}">
                         <i class="bx bx-chevron-right"></i> Financial Years
                     </a>
                 </li>
             </ul>
         </li>
+        @endif
 
+        @if(authUserRole() == 'administrator')
         <li class="{{ isMainMenuActive('site-settings') }}">
             <a href="javascript: void(0);" class="has-arrow waves-effect">
                 <i class="bx bx-cog"></i>
@@ -105,5 +120,6 @@
 
             </ul>
         </li>
+        @endif
     </ul>
 </div>

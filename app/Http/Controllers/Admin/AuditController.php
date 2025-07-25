@@ -17,6 +17,8 @@ use App\Models\AuditAndStepPair;
 use App\Models\AuditAndStepQuestionPair;
 use App\Models\AuditStep;
 use App\Models\AuditStepQuestion;
+use App\Models\FinancialYear;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 
 class AuditController extends Controller
@@ -29,7 +31,37 @@ class AuditController extends Controller
     public function index()
     {
         $data = Audit::query();
+
+        // Filter by financial year if provided
+        if (request()->filled('financial_year')) {
+            $financial_year_id = FinancialYear::where('financial_year', request('financial_year'))
+                ->value('id'); // directly get the ID
+
+            if ($financial_year_id) {
+                $data->where('financial_year_id', $financial_year_id);
+            }
+        }
+
+        // Filter by organization year if provided
+        if (request()->filled('organization')) {
+            $organization_id = Organization::where('slug', request('organization'))
+                ->value('id'); // directly get the ID
+
+            if ($organization_id) {
+                $data->where('organization_id', $organization_id);
+            }
+        }
+
+        // Filter by audit step status if provided
+        if (request()->filled('step_status')) {
+            $data->whereHas('audit_steps', function ($q) {
+                $q->where('status', request('step_status'));
+            });
+        }
+
+        // Get paginated result
         $audits = $data->latest()->paginate(20);
+
         return view('admin.audits.audit_list', compact('audits'));
     }
 
@@ -56,7 +88,7 @@ class AuditController extends Controller
         $audit_number = Audit::getAuditNumber();
         $audit->audit_number = $audit_number;
         $audit->title = $request->title;
-        $audit->slug = $audit_number.'-'.Str::slug($request->title);
+        $audit->slug = $audit_number . '-' . Str::slug($request->title);
         $audit->financial_year_id = $request->financial_year;
         $audit->organization_id = $request->organization;
         $audit->start_date = dateFormat($request->start_date);
@@ -92,16 +124,16 @@ class AuditController extends Controller
             }
 
             // Save audit and step pairs
-            $audit_steps = AuditStep::active()->oldest('step_no')->select('id','step_no')->get();
-            foreach($audit_steps as $step) {
+            $audit_steps = AuditStep::active()->oldest('step_no')->select('id', 'step_no')->get();
+            foreach ($audit_steps as $step) {
                 $audit_step_pair = new AuditAndStepPair();
                 $audit_step_pair->audit_id = $audit->id;
                 $audit_step_pair->audit_step_id = $step->id;
                 $audit_step_pair->step_no = $step->step_no;
                 $audit_step_pair->save();
                 // Save audit and step and questions pairs
-                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id','audit_step_id','sorting_serial')->get();
-                foreach($step_questions as $question) {
+                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id', 'audit_step_id', 'sorting_serial')->get();
+                foreach ($step_questions as $question) {
                     $step_question_pair = new AuditAndStepQuestionPair();
                     $step_question_pair->audit_id = $audit->id;
                     $step_question_pair->audit_step_id = $step->id;
@@ -112,7 +144,7 @@ class AuditController extends Controller
                 }
             }
 
-            return redirect()->route('admin.audits.index')->with(successMessage('success','New Audit has been created successfully!'));
+            return redirect()->route('admin.audits.index')->with(successMessage('success', 'New Audit has been created successfully!'));
         } else {
             return redirect()->route('admin.audits.index')->with(warningMessage('warning', 'Data not saved. Something went wrong!'));
         }
@@ -124,9 +156,10 @@ class AuditController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $audit = Audit::withAuditSteps()->whereSlug($slug)->firstOrFail();
+        return view('admin.audits.audit_details',compact('audit'));
     }
 
     /**
@@ -138,8 +171,8 @@ class AuditController extends Controller
     public function edit($slug)
     {
         $audit = Audit::draft()->whereSlug($slug)->firstOrFail();
-        $route = route('admin.audits.update',encrypt_decrypt($audit->id,'encrypt'));
-        return view('admin.audits.add_edit_audit',compact('audit','route'));
+        $route = route('admin.audits.update', encrypt_decrypt($audit->id, 'encrypt'));
+        return view('admin.audits.add_edit_audit', compact('audit', 'route'));
     }
 
     /**
@@ -151,9 +184,9 @@ class AuditController extends Controller
      */
     public function update(AuditValidationRequest $request, $id)
     {
-        $audit = Audit::findOrFail(encrypt_decrypt($id,'decrypt'));
+        $audit = Audit::findOrFail(encrypt_decrypt($id, 'decrypt'));
         $audit->title = $request->title;
-        $audit->slug = $audit->audit_number.'-'.Str::slug($request->title);
+        $audit->slug = $audit->audit_number . '-' . Str::slug($request->title);
         $audit->financial_year_id = $request->financial_year;
         $audit->organization_id = $request->organization;
         $audit->start_date = dateFormat($request->start_date);
@@ -196,16 +229,16 @@ class AuditController extends Controller
             AuditAndStepPair::whereIn('audit_id', array($audit->id))->delete();
             AuditAndStepQuestionPair::whereIn('audit_id', array($audit->id))->delete();
 
-            $audit_steps = AuditStep::active()->oldest('step_no')->select('id','step_no')->get();
-            foreach($audit_steps as $step) {
+            $audit_steps = AuditStep::active()->oldest('step_no')->select('id', 'step_no')->get();
+            foreach ($audit_steps as $step) {
                 $audit_step_pair = new AuditAndStepPair();
                 $audit_step_pair->audit_id = $audit->id;
                 $audit_step_pair->audit_step_id = $step->id;
                 $audit_step_pair->step_no = $step->step_no;
                 $audit_step_pair->save();
                 // Save audit and step and questions pairs
-                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id','audit_step_id','sorting_serial')->get();
-                foreach($step_questions as $question) {
+                $step_questions = AuditStepQuestion::where('audit_step_id', $step->id)->active()->sort()->select('id', 'audit_step_id', 'sorting_serial')->get();
+                foreach ($step_questions as $question) {
                     $step_question_pair = new AuditAndStepQuestionPair();
                     $step_question_pair->audit_id = $audit->id;
                     $step_question_pair->audit_step_id = $step->id;
@@ -216,7 +249,7 @@ class AuditController extends Controller
                 }
             }
 
-            return redirect()->route('admin.audits.index')->with(successMessage('success','New Audit has been created successfully!'));
+            return redirect()->route('admin.audits.index')->with(successMessage('success', 'New Audit has been created successfully!'));
         } else {
             return redirect()->route('admin.audits.index')->with(warningMessage('warning', 'Data not saved. Something went wrong!'));
         }
