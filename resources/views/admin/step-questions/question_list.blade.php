@@ -26,8 +26,8 @@
                             <thead class="table-light">
                             <tr>
                                 <th class="text-center">Sl. no.</th>
-                                <th>Question</th>
-                                <th class="text-center">Active Status</th>
+                                <th>Question/Particulars</th>
+                                {{-- <th class="text-center">Active Status</th> --}}
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
@@ -36,13 +36,13 @@
                                 <tr data-id="{{ $question->id }}" data-step-id="{{ $audit_step->id }}">
                                     <td class="text-center sorting-serial handle">{{ $question->sorting_serial }}</td>
                                     <td>{{ $question->question ?? '' }}</td>
-                                    <td class="text-center">
+                                    {{-- <td class="text-center">
                                         <input type="checkbox" id="question-{{ $loop->index + 1 }}" class="question-status"
                                                data-id="{{ $question->id }}"
                                                switch="bool" {{ isActive($question->status) ? 'checked' : '' }} />
                                         <label class="custom-label-margin" for="question-{{ $loop->index + 1 }}" data-on-label="Yes"
                                                data-off-label="No"></label>
-                                    </td>
+                                    </td> --}}
                                     <td class="text-center">
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"
                                            href="{{ route('admin.edit-question',$question->slug) }}"

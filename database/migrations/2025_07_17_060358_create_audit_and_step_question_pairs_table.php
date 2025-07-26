@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('question_id');
             $table->integer('sorting_serial');
             $table->string('closed_ended_answer')->nullable();
-            $table->string('text_answer')->nullable();
+            $table->longText('text_answer',10000)->nullable();
             $table->string('documents',1000)->nullable();
             $table->integer('submitted_by')->nullable();
             $table->timestamps();

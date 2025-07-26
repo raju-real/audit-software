@@ -21,8 +21,8 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="flex-grow-1">
-                                    <p class="text-muted fw-medium">Orders</p>
-                                    <h4 class="mb-0">1,235</h4>
+                                    <p class="text-muted fw-medium">Audits</p>
+                                    <h4 class="mb-0">{{ DB::table('audits')->count() ?? '0' }}</h4>
                                 </div>
 
                                 <div class="flex-shrink-0 align-self-center">
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- end row -->
 @endsection
 

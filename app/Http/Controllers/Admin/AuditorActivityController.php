@@ -87,7 +87,10 @@ class AuditorActivityController extends Controller
                     // }
 
                     if ($request->hasFile("documents.{$key}")) {
-                        $step_answer->documents = uploadFile($request->file("documents.{$key}"), 'documents');
+                        $base_folder = 'documents/audit/';
+                        $sub_folder = $step_info->audit_info->financial_year->financial_year.'/'.$step_info->audit_info->organization->slug;
+                        $audit_folder = $base_folder.$sub_folder;
+                        $step_answer->documents = uploadFile($request->file("documents.{$key}"), $audit_folder);
                     }
 
                     if ($step_answer->save()) {

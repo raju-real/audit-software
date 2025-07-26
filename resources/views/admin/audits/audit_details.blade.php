@@ -94,7 +94,7 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">Sl.no</th>
-                                        <th>Question</th>
+                                        <th>Question/Particulars</th>
                                         <th>Closed-Ended</th>
                                         <th>Text Answer</th>
                                         <th class="text-center">Attachment</th>

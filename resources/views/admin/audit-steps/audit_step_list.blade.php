@@ -28,7 +28,7 @@
                                 <th class="text-center">Step no.</th>
                                 <th>Title</th>
                                 <th>ISA Reference</th>
-                                <th class="text-center">Question Count</th>
+                                <th class="text-center">Question/Particulars</th>
                                 <th class="text-center">Active Status</th>
                                 <th class="text-center">Action</th>
                             </tr>

@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Add/Edit Question on {{ $audit_step->short_title }}
+                <h4 class="mb-sm-0 font-size-18">Add/Edit Question/Particulars on {{ $audit_step->short_title }}
                     : {{ $audit_step->title ?? '' }}</h4>
                 <div class="page-title-right">
                     <a href="{{ route('admin.question-list', $audit_step->slug) }}"
@@ -33,20 +33,20 @@
                             @method('PUT')
                         @endisset
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-9">
                                 <div class="mb-3">
-                                    <label class="form-label">Question {!! starSign() !!}</label>
+                                    <label class="form-label">Question/Particulars {!! starSign() !!}</label>
                                     <input type="text" name="question"
                                            value="{{ old('question') ?? $question->question ?? '' }}"
                                            class="form-control {{ hasError('question') }}"
-                                           placeholder="Question">
+                                           placeholder="Question/Particulars">
                                     @error('question')
                                     {!! displayError($message) !!}
                                     @enderror
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Status {!! starSign() !!}</label>
                                     <select name="status"

@@ -33,6 +33,9 @@ class AdminLogin extends Controller
 
             // Update login time
             $user->update(['last_login_at' => now()]);
+            
+            // Temporary redirect to dashboard
+            return redirect()->intended(route('admin.dashboard'));
 
             // Check if device is remembered
             if ($this->deviceIsRemembered($request, $user)) {

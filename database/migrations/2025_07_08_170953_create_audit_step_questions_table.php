@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('audit_step_questions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('audit_step_id');
-            $table->string('question', 100);
-            $table->string('slug', 255);
+            $table->string('question', 1000);
+            $table->string('slug', 2000);
             $table->enum('is_closed_ended',['yes','no'])->default('no')->comment('Is this a closed-ended question (Yes,No or N/A)?');
             $table->enum('is_boolean_answer_required',['yes','no'])->default('no')->comment('Is answering the closed-ended question mandatory?');
             $table->enum('has_text_answer',['yes','no'])->default('no')->comment('Does this question need a text answer?');
