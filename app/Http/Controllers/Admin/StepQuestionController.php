@@ -32,7 +32,7 @@ class StepQuestionController extends Controller
         $this->validate($request, [
             'audit_step_id' => 'required|exists:audit_steps,id',
             'question' => ['required',
-                'max:100',
+                'max:1000',
                 Rule::unique('audit_step_questions') // Your table name
                 ->where(function ($query) use ($request) {
                     return $query->where('audit_step_id', $request->input('audit_step_id'));
@@ -75,7 +75,7 @@ class StepQuestionController extends Controller
         $this->validate($request, [
             'audit_step_id' => 'required|exists:audit_steps,id',
             'question' => ['required',
-                'max:100',
+                'max:1000',
                 Rule::unique('audit_step_questions')
                 ->where(function ($query) use ($request) {
                     return $query->where('audit_step_id', $request->input('audit_step_id'));
