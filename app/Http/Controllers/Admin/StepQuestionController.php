@@ -109,7 +109,7 @@ class StepQuestionController extends Controller
         $redirect_route = route('admin.question-list', stepSlugById($question->audit_step_id));
         $question->update(['deleted_by' => Auth::id()]);
         $question->delete();
-        return redirect()->route($redirect_route)->with(deleteMessage());
+        return redirect()->back()->with(deleteMessage());
     }
 
     public function updateQuestionStatus($id): \Illuminate\Http\JsonResponse
