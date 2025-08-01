@@ -81,4 +81,42 @@ class SupervisorActivityController extends Controller
         $step->save();
         return redirect()->route('admin.supervisor-audit-steps',encrypt_decrypt($step->audit_id,'encrypt'))->with(infoMessage());
     }
+
+    public function returnAudit(Request $request, $step_id) {
+        $this->validate($request, [
+            'returned_for' => 'required|max:5000'
+        ]);
+        $step_info = AuditAndStepPair::findOrFail($step_id);
+        $step_info->status = 'returned';
+        $step_info->returned_for = $request->returned_for;
+        $step_info->reviewed_by = Auth::id();
+        $step_info->save();
+        if($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'redirect_to' => route('admin.supervisor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt'))
+            ]);
+        } else {
+         return redirect()->route('admin.supervisor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt'))->with(infoMessage());
+        }
+    }
+
+    public function rejectAudit(Request $request, $step_id) {
+        $this->validate($request, [
+            'rejected_for' => 'required|max:5000'
+        ]);
+        $step_info = AuditAndStepPair::findOrFail($step_id);
+        $step_info->status = 'rejected';
+        $step_info->rejected_for = $request->rejected_for;
+        $step_info->reviewed_by = Auth::id();
+        $step_info->save();
+        if($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'redirect_to' => route('admin.supervisor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt'))
+            ]);
+        } else {
+         return redirect()->route('admin.supervisor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt'))->with(infoMessage());
+        }
+    }
 }

@@ -3,6 +3,7 @@
 use Dom\Comment;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Audit;
 use Illuminate\Support\Str;
 use App\Models\AuditAuditor;
 use App\Models\Organization;
@@ -519,6 +520,44 @@ if(! function_exists('auditWiseSupervisors')) {
         $auditors = AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id');
         $users = User::whereIn('id',$auditors)->pluck('name')->toArray();
         return implode(', ',$users);
+    }
+}
+
+if (! function_exists('auditStepStatusWiseCount')) {
+    function auditStepStatusWiseCount($status = null)
+    {
+        return Audit::whereHas('audit_steps', function ($q) use ($status) {
+            $q->where('status', $status);
+        })
+        ->count();
+    }
+}
+
+if (! function_exists('supervisorStepStatusWiseCount')) {
+    function supervisorStepStatusWiseCount($status = null, $supervisor_id = null)
+    {
+        $supervisorId = $supervisor_id ?? Auth::id();
+        return Audit::whereHas('supervisors', function ($q) use ($supervisorId) {
+            $q->where('user_id', $supervisorId);
+        })
+        ->whereHas('audit_steps', function ($q) use ($status) {
+            $q->where('status', $status);
+        })
+        ->count();
+    }
+}
+
+if (! function_exists('auditorStepStatusWiseCount')) {
+    function auditorStepStatusWiseCount($status = null, $auditor_id = null)
+    {
+        $auditorId = $auditor_id ?? Auth::id();
+        return Audit::whereHas('auditors', function ($q) use ($auditorId) {
+            $q->where('user_id', $auditorId);
+        })
+        ->whereHas('audit_steps', function ($q) use ($status) {
+            $q->where('status', $status);
+        })
+        ->count();
     }
 }
 

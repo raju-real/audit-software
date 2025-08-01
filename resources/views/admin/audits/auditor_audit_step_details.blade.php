@@ -38,6 +38,11 @@
                                     <td>:</td>
                                     <td>{{ $step_info->audit_step_info->short_title ?? '' }}</td>
                                 </tr>
+                                <tr>
+                                    <th>Workflow Status</th>
+                                    <td>:</td>
+                                    <td>{{ ucFirst($step_info->status) ?? '' }}</td>
+                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6">
@@ -56,6 +61,24 @@
                                     <th>Step</th>
                                     <td>:</td>
                                     <td>{{ $step_info->audit_step_info->title ?? '' }}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table">
+                                <tr>
+                                    <th class="width-20">Returned/Rejected For</th>
+                                    <td>:</td>
+                                    <td>
+                                        @if ($step_info->status === 'returned')
+                                            {{ $step_info->returned_for ?? 'N/A' }}
+                                        @elseif($step_info->status === 'rejected')
+                                            {{ $step_info->rejected_for ?? 'N/A' }}
+                                        @else
+                                            {{ 'N/A' }}
+                                        @endif
+                                    </td>
                                 </tr>
                             </table>
                         </div>

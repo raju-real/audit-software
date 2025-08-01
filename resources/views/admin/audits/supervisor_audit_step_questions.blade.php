@@ -59,8 +59,24 @@
                                 </tr>
                             </table>
                         </div>
+                        <div class="col-md-12">
+                            <table class="table">
+                                <tr>
+                                    <th class="width-20">Returned/Rejected For</th>
+                                    <td>:</td>
+                                    <td>
+                                        @if ($step_info->status === 'returned')
+                                            {{ $step_info->returned_for ?? 'N/A' }}
+                                        @elseif($step_info->status === 'rejected')
+                                            {{ $step_info->rejected_for ?? 'N/A' }}
+                                        @else
+                                            {{ 'N/A' }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -76,13 +92,13 @@
                         @if ($step_info->status !== 'draft')
                             @if ($step_info->status !== 'approved')
                                 @if ($step_info->status !== 'rejected')
-                                    <a href="{{ route('admin.supervised-step-status', ['step_id' => encrypt_decrypt($step_info->id, 'encrypt'), 'status' => 'rejected']) }}"
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#reject-for-modal"
                                         class="btn btn-danger">
                                         Reject
                                     </a>
                                 @endif
                                 @if ($step_info->status !== 'returned')
-                                    <a href="{{ route('admin.supervised-step-status', ['step_id' => encrypt_decrypt($step_info->id, 'encrypt'), 'status' => 'returned']) }}"
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#return-for-modal"
                                         class="btn btn-warning">
                                         Send Back
                                     </a>
@@ -156,4 +172,65 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="return-for-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Send Back Audit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.supervisor-return-audit', $step_info->id) }}" id="return-audit-form"
+                        method="POST" class="needs-validation" novalidate>
+                        @csrf
+                        <div class="col-12 mb-3">
+                            <label class="col-form-label">Returned For (5000 chars) {!! starSign() !!}</label>
+                            <textarea name="returned_for" cols="30" rows="10" placeholder="Returned For"
+                                class="form-control returned-form-input" maxlength="5000" required></textarea>
+                            <span id="return_for_error" class="text-danger font-weight-500"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary dynamic-submit-btn"
+                        data-form-id="return-audit-form">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reject-for-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reject Audit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.supervisor-reject-audit', $step_info->id) }}" id="reject-audit-form"
+                        method="POST" class="needs-validation" novalidate>
+                        @csrf
+                        <div class="col-12 mb-3">
+                            <label class="col-form-label">Rejected For (5000 chars) {!! starSign() !!}</label>
+                            <textarea name="rejected_for" cols="30" rows="10" placeholder="Rejected For"
+                                class="form-control rejected-form-input" maxlength="5000" required></textarea>
+                            <span id="reject_for_error" class="text-danger font-weight-500"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary dynamic-submit-btn"
+                        data-form-id="reject-audit-form">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('js')
+    <script src="{{ asset('assets/admin/js/custom/supervisor_review_audit.js') }}"></script>
+@endpush

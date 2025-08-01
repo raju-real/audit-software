@@ -82,6 +82,25 @@
                             </div>
                         </div>
 
+                        @if ($audit_step->status === 'returned' || $audit_step->status === 'rejected')
+                            <table class="table">
+                                <tr>
+                                    <th class="width-10">
+                                        {{ $audit_step->status === 'returned' ? 'Returned For' : 'Rejected For' }}</th>
+                                    <td>:</td>
+                                    <td>
+                                        @if ($audit_step->status === 'returned')
+                                            {{ $audit_step->returned_for ?? 'N/A' }}
+                                        @elseif($audit_step->status === 'rejected')
+                                            {{ $audit_step->rejected_for ?? 'N/A' }}
+                                        @else
+                                            {{ 'N/A' }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
+                        @endif
+
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped table-responsive-md w-100">
                                 <colgroup>
@@ -124,6 +143,7 @@
                             </table>
 
                         </div>
+
                     </div>
                 </div>
             @endforeach

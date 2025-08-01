@@ -71,7 +71,7 @@
                                     <th>Title</th>
                                     <th class="text-center">F.Y</th>
                                     <th>Organization</th>
-                                    <th>Current Status</th>
+                                    <th>Audit Status</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>

@@ -94,6 +94,8 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::get('supervisor-audit-steps/{audit_id}','auditSteps')->name('supervisor-audit-steps');
         Route::get('review-step-answer/{step_id}','reviewStepAnswer')->name('review-step-answer');
         Route::get('supervised-step-status','changeStatus')->name('supervised-step-status');
+        Route::post('supervisor-return-audit/{step_id}','returnAudit')->name('supervisor-return-audit');
+        Route::post('supervisor-reject-audit/{step_id}','rejectAudit')->name('supervisor-reject-audit');
     });
 
 

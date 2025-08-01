@@ -98,7 +98,7 @@ class Audit extends Model
     {
         return $query->with([
             'audit_steps' => function ($audit_step) {
-                $audit_step->select('id', 'audit_id', 'audit_step_id', 'step_no', 'audit_by', 'reviewed_by', 'status')
+                $audit_step->select('id', 'audit_id', 'audit_step_id', 'step_no', 'audit_by', 'reviewed_by', 'status', 'returned_for', 'rejected_for')
                     ->with([
                         'audit_step_questions' => function ($step_question) {
                             $step_question->select('id', 'audit_step_pair_id', 'audit_step_id', 'audit_id', 'question_id', 'sorting_serial', 'closed_ended_answer', 'text_answer', 'documents');
