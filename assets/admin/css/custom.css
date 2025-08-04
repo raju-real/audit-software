@@ -159,7 +159,9 @@
     padding: 10px 10px;
 }
 
-.te
+.input-padding {
+    padding: 0.47rem 0.75rem;
+}
 
 
 @media (max-width: 576px) {

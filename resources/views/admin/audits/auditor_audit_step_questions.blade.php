@@ -1,14 +1,14 @@
 @extends('admin.layouts.app')
-@section('title', 'Submit Answer')
+@section('title', $submit_type === 'save' ? 'Save Answer' : 'Submit Answer')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Submit Answer</h4>
+                <h4 class="mb-sm-0 font-size-18">{{ $submit_type === 'save' ? 'Save Answer' : 'Submit Answer' }}</h4>
                 <div class="page-title-right">
                     <a href="{{ route('admin.auditor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt')) }}"
-                       class="btn btn-sm btn-outline-primary">
+                        class="btn btn-sm btn-outline-primary">
                         <i class="fa fa-arrow-circle-left"></i> Back
                     </a>
                 </div>
@@ -72,9 +72,11 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <form action="{{ route('admin.submit-answer', encrypt_decrypt($step_info->id, 'encrypt')) }}"
-                            enctype="multipart/form-data" method="POST" class="needs-validation" novalidate>
+                            enctype="multipart/form-data" method="POST" class="needs-validation" novalidate
+                            id="prevent-form">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="submit_type" value="{{ $submit_type ?? 'save' }}">
                             <table class="table table-bordered table-striped table-responsive-md w-100">
                                 <colgroup>
                                     <col class="width-5">
@@ -104,7 +106,8 @@
                                             {{-- Closed Ended Answer --}}
                                             <td>
                                                 <select name="closed_ended_answer[]"
-                                                    class="form-select select2-search-disable {{ hasError('closed_ended_answer.' . $index) }}" required>
+                                                    class="form-select select2-search-disable {{ hasError('closed_ended_answer.' . $index) }}"
+                                                    required>
                                                     @foreach (getClosedEnded() as $status)
                                                         <option value="{{ $status->value }}"
                                                             {{ (old('closed_ended_answer.' . $index) ?? $step_question->closed_ended_answer) == $status->value ? 'selected' : '' }}>
@@ -119,19 +122,32 @@
 
                                             {{-- Text Answer --}}
                                             <td>
-                                                <textarea name="text_answer[]" class="form-control" placeholder="Answer" {{ $step_question->question->is_text_answer_required == 'yes' ? 'required' : '' }}>{{ old('text_answer.' . $index) ?? ($step_question->text_answer ?? '') }}</textarea>
+                                                <textarea name="text_answer[]" class="form-control" placeholder="Answer"
+                                                    @if ($submit_type == 'submit' && $step_question->question->is_text_answer_required == 'yes') required @endif>{{ old('text_answer.' . $index) ?? ($step_question->text_answer ?? '') }}</textarea>
                                             </td>
 
                                             {{-- File Upload --}}
                                             <td>
-                                                <input type="file" name="documents[]" class="form-control"
-                                                    accept=".jpg,.jpeg,.png,.pdf" {{ $step_question->question->is_text_document_required == 'yes' ? 'required' : '' }}>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="file" name="documents[]" class="form-control"
+                                                        accept=".jpg,.jpeg,.png,.pdf"
+                                                        @if (
+                                                            $submit_type == 'submit' &&
+                                                                $step_question->question->is_document_required == 'yes' &&
+                                                                empty($step_question->documents)) required @endif>
+
+                                                    {{-- Check if a document exists and render the button --}}
+                                                    @if (!empty($step_question->documents))
+                                                        <a href="{{ asset($step_question->documents) }}" target="_blank"
+                                                            class="btn btn-sm btn-info input-padding ms-2" title="View Document">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    @endif
+                                                </div>
+
                                                 @error('documents.' . $index)
                                                     {!! displayError($message) !!}
                                                 @enderror
-                                                {{-- @error('documents')
-                                                    {!! displayError($message) !!}
-                                                @enderror --}}
                                             </td>
                                         </tr>
                                     @empty
@@ -142,7 +158,11 @@
                             </table>
 
                             <div>
-                                <x-submit-button></x-submit-button>
+                                @if ($submit_type === 'submit')
+                                    <x-submit-button></x-submit-button>
+                                @else
+                                    <x-save-button></x-save-button>
+                                @endif
                             </div>
                         </form>
                     </div>

@@ -50,7 +50,15 @@ class AuditorActivityController extends Controller
     public function stepQuestions($step_id = null)
     {
         $step_info = AuditAndStepPair::getStepInfo($step_id);
-        return view('admin.audits.auditor_audit_step_questions', compact('step_info'));
+        $submit_type = 'save';
+        return view('admin.audits.auditor_audit_step_questions', compact('step_info','submit_type'));
+    }
+
+    public function previewQuestions($step_id = null)
+    {
+        $step_info = AuditAndStepPair::getStepInfo($step_id);
+        $submit_type = 'submit';
+        return view('admin.audits.auditor_audit_step_questions', compact('step_info','submit_type'));
     }
 
     public function submitAnswer(Request $request, $step_id)
@@ -94,7 +102,7 @@ class AuditorActivityController extends Controller
                     }
 
                     if ($step_answer->save()) {
-                        $step_info->status = 'ongoing';
+                        $step_info->status = $request->submit_type === 'submit' ? 'ongoing' : 'draft';
                         $step_info->audit_by = Auth::id();
                         $step_info->save();
                         Audit::where('id', $step_info->audit_id)->update(['workflow_status' => 'ongoing']);

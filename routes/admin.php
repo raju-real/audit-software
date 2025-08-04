@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\TwoFactorSetupController;
 |--------------------------------------------------------------------------
 */
 
-Route::view('/', 'admin.auth.admin_login')->name('home');
+Route::view('/', 'admin.auth.app2')->name('home');
 Route::post('admin-login', AdminLogin::class)->middleware('throttle:5,1')->name('admin-login');
 
 Route::view('permission-denied', 'admin.permission_denied')->name('permission-denied');
@@ -83,6 +83,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::get('auditor-audits','auditList')->name('auditor-audits');
         Route::get('auditor-audit-steps/{audit_id}','auditSteps')->name('auditor-audit-steps');
         Route::get('auditor-step-questions/{step_id}','stepQuestions')->name('auditor-step-questions');
+        Route::get('auditor-preview-questions/{step_id}','previewQuestions')->name('auditor-preview-questions');
         Route::put('submit-answer/{step_id}','submitAnswer')->name('submit-answer');
         Route::get('auditor-step-details/{step_id}','stepDetails')->name('auditor-step-details');
     });
@@ -97,9 +98,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::post('supervisor-return-audit/{step_id}','returnAudit')->name('supervisor-return-audit');
         Route::post('supervisor-reject-audit/{step_id}','rejectAudit')->name('supervisor-reject-audit');
     });
-
-
-    // Only for administrator
+    // ===================================================================
+    // ONLY FOR ADMINISTRATOR ROUTES
+    // ===================================================================
     Route::middleware('administrator')->group(function () {
         Route::resource('audits', AuditController::class);
         Route::controller(AuditController::class)->group(function () {
