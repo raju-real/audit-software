@@ -1,6 +1,6 @@
 <div id="sidebar-menu">
     <ul class="metismenu list-unstyled" id="side-menu">
-        <li>
+        <li class="{{ isMainMenuActive('dashboard,audit-wise-activators') }}">
             <a href="{{ route('admin.dashboard') }}" class="waves-effect">
                 <i class="bx bx-home-circle"></i>
                 <span>Dashboard</span>

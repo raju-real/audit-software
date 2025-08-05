@@ -684,11 +684,11 @@ body[data-layout="horizontal"] .footer {
 }
 
 .mm-active > a {
-    color: #556ee6 !important;
+    color: #ff8033 !important;
 }
 
 .mm-active > a i {
-    color: #556ee6 !important;
+    color: #ff8033 !important;
 }
 
 .mm-active .active {
@@ -696,7 +696,7 @@ body[data-layout="horizontal"] .footer {
 }
 
 .mm-active .active i {
-    color: #556ee6 !important;
+    color: #ff8033 !important;
 }
 
 .mm-active > i {

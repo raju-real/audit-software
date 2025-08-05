@@ -105,6 +105,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::resource('audits', AuditController::class);
         Route::controller(AuditController::class)->group(function () {
             Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
+            Route::get('audit-wise-activators','auditActivators')->name('audit-wise-activators');
         });
         // Settings
         Route::controller(SettingController::class)->group(function () {

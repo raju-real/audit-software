@@ -283,4 +283,41 @@ class AuditController extends Controller
     {
         //
     }
+
+
+    public function auditActivators() {
+        $data = Audit::query();
+
+        // Filter by financial year if provided
+        if (request()->filled('financial_year')) {
+            $financial_year_id = FinancialYear::where('financial_year', request('financial_year'))
+                ->value('id'); // directly get the ID
+
+            if ($financial_year_id) {
+                $data->where('financial_year_id', $financial_year_id);
+            }
+        }
+
+        // Filter by organization year if provided
+        if (request()->filled('organization')) {
+            $organization_id = Organization::where('slug', request('organization'))
+                ->value('id'); // directly get the ID
+
+            if ($organization_id) {
+                $data->where('organization_id', $organization_id);
+            }
+        }
+
+        // Filter by audit step status if provided
+        if (request()->filled('step_status')) {
+            $data->whereHas('audit_steps', function ($q) {
+                $q->where('status', request('step_status'));
+            });
+        }
+
+        // Get paginated result
+        $audits = $data->latest()->paginate(20);
+
+        return view('admin.audits.audit_activators', compact('audits'));
+    }
 }

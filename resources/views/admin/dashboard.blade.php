@@ -17,7 +17,7 @@
         @if (authUserRole() === 'administrator')
             <div class="col-xl-12">
                 <div class="row">
-                    <h2>Audit workflow status</h2>
+                    <h2>Dashboard as Administrator</h2>
                     <hr>
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
@@ -25,33 +25,8 @@
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
-                                            <a href="{{ route('admin.audits.index', ['step_status' => 'draft']) }}">
-                                                Pending Audits
-                                            </a>
-                                        </p>
-                                        <h4 class="mb-0">
-                                            {{ auditStepStatusWiseCount('draft') }}
-                                        </h4>
-                                    </div>
-                                    <div class="flex-shrink-0 align-self-center">
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-copy-alt font-size-24"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.audits.index', ['step_status' => 'ongoing']) }}">
-                                                Ongoing Audits
+                                                Engagement in progress
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -69,6 +44,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -76,7 +52,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.audits.index', ['step_status' => 'approved']) }}">
-                                                Approved Audits
+                                                Engagement Completed
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -94,19 +70,46 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
-                                            <a href="{{ route('admin.audits.index', ['step_status' => 'returned']) }}">
-                                                Returned Audits
+                                            <a href="{{ route('admin.audits.index', ['step_status' => 'draft']) }}">
+                                                Engagement Pending
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
+                                            {{ auditStepStatusWiseCount('draft') }}
+                                        </h4>
+                                    </div>
+                                    <div class="flex-shrink-0 align-self-center">
+                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                            <span class="avatar-title">
+                                                <i class="bx bx-copy-alt font-size-24"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card mini-stats-wid">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-muted fw-medium">
+                                            <a href="{{ route('admin.audit-wise-activators',['step_status' => 'draft']) }}">
+                                                Who is where
+                                            </a>
+                                        </p>
+                                        {{-- <h4 class="mb-0">
                                             {{ auditStepStatusWiseCount('returned') }}
-                                        </h4>
+                                        </h4> --}}
                                     </div>
                                     <div class="flex-shrink-0 align-self-center">
                                         <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
@@ -119,31 +122,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted fw-medium">
-                                            <a href="{{ route('admin.audits.index', ['step_status' => 'rejected']) }}">
-                                                Rejected Audits
-                                            </a>
-                                        </p>
-                                        <h4 class="mb-0">
-                                            {{ auditStepStatusWiseCount('rejected') }}
-                                        </h4>
-                                    </div>
-                                    <div class="flex-shrink-0 align-self-center">
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-copy-alt font-size-24"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         @else
@@ -151,31 +130,7 @@
                 <div class="row">
                     <h2>Audit workflow status as Supervisor</h2>
                     <hr>
-                    <div class="col-md-3">
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted fw-medium">
-                                            <a href="{{ route('admin.supervisor-audits', ['status' => 'draft']) }}">
-                                                Pending Audits
-                                            </a>
-                                        </p>
-                                        <h4 class="mb-0">
-                                            {{ supervisorStepStatusWiseCount(Auth::user()->id, 'draft') }}
-                                        </h4>
-                                    </div>
-                                    <div class="flex-shrink-0 align-self-center">
-                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
-                                            <span class="avatar-title">
-                                                <i class="bx bx-copy-alt font-size-24"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -183,7 +138,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.supervisor-audits', ['status' => 'ongoing']) }}">
-                                                Ongoing Audits
+                                                Engagement in progress
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -201,18 +156,19 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
-                                            <a href="{{ route('admin.supervisor-audits', ['status' => 'approved']) }}">
-                                                Approved Audits
+                                            <a href="{{ route('admin.supervisor-audits', ['status' => 'draft']) }}">
+                                                Request Pending
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
-                                            {{ supervisorStepStatusWiseCount(Auth::user()->id, 'approved') }}
+                                            {{ supervisorStepStatusWiseCount(Auth::user()->id, 'draft') }}
                                         </h4>
                                     </div>
                                     <div class="flex-shrink-0 align-self-center">
@@ -226,6 +182,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -233,7 +190,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.supervisor-audits', ['status' => 'returned']) }}">
-                                                Returned Audits
+                                                Request Returned
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -251,7 +208,34 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
+                        <div class="card mini-stats-wid">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-muted fw-medium">
+                                            <a href="{{ route('admin.supervisor-audits', ['status' => 'approved']) }}">
+                                                Request Approved
+                                            </a>
+                                        </p>
+                                        <h4 class="mb-0">
+                                            {{ supervisorStepStatusWiseCount(Auth::user()->id, 'approved') }}
+                                        </h4>
+                                    </div>
+                                    <div class="flex-shrink-0 align-self-center">
+                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                            <span class="avatar-title">
+                                                <i class="bx bx-copy-alt font-size-24"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="d-flex">
@@ -275,7 +259,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -283,6 +267,7 @@
                 <div class="row">
                     <h2>Audit workflow status as Auditor</h2>
                     <hr>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -290,7 +275,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.auditor-audits', ['status' => 'draft']) }}">
-                                                Pending Audits
+                                                Pending Engagement (PE)
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -308,6 +293,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -315,7 +301,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.auditor-audits', ['status' => 'ongoing']) }}">
-                                                Ongoing Audits
+                                                Engagement in progress (EIP)
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -333,6 +319,33 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-3">
+                        <div class="card mini-stats-wid">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-muted fw-medium">
+                                            <a href="{{ route('admin.auditor-audits', ['status' => 'ongoing']) }}">
+                                                Request Pending for Approval (RPA)
+                                            </a>
+                                        </p>
+                                        <h4 class="mb-0">
+                                            {{ auditorStepStatusWiseCount(Auth::user()->id, 'ongoing') }}
+                                        </h4>
+                                    </div>
+                                    <div class="flex-shrink-0 align-self-center">
+                                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary">
+                                            <span class="avatar-title">
+                                                <i class="bx bx-copy-alt font-size-24"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -340,7 +353,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.auditor-audits', ['status' => 'approved']) }}">
-                                                Approved Audits
+                                                Request Approved
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -358,6 +371,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
@@ -365,7 +379,7 @@
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">
                                             <a href="{{ route('admin.auditor-audits', ['status' => 'returned']) }}">
-                                                Returned Audits
+                                                Request Returned
                                             </a>
                                         </p>
                                         <h4 class="mb-0">
@@ -383,7 +397,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+
+                    {{-- <div class="col-md-3">
                         <div class="card mini-stats-wid">
                             <div class="card-body">
                                 <div class="d-flex">
@@ -407,7 +422,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         @endif
