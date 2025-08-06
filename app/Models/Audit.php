@@ -38,6 +38,10 @@ class Audit extends Model
         return $this->hasMany(AuditSupervisor::class, 'audit_id', 'id');
     }
 
+    public function balance_sheet() {
+        return $this->hasOne(AuditBalanceSheet::class, 'audit_id', 'id');
+    }
+
     public function scopeDraft($query)
     {
         return $query->where('workflow_status', 'draft');

@@ -548,7 +548,7 @@ if (! function_exists('supervisorStepStatusWiseCount')) {
 }
 
 if (! function_exists('auditorStepStatusWiseCount')) {
-    function auditorStepStatusWiseCount($status = null, $auditor_id = null)
+    function auditorStepStatusWiseCount( $auditor_id = null, $status = null)
     {
         $auditorId = $auditor_id ?? Auth::id();
         return Audit::whereHas('auditors', function ($q) use ($auditorId) {

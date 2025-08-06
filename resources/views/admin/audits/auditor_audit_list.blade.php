@@ -108,6 +108,9 @@
                                             <a data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Steps"
                                                 href="{{ route('admin.auditor-audit-steps', encrypt_decrypt($audit->id, 'encrypt')) }}"
                                                 class="btn btn-sm btn-info"><i class="fa fa-tasks"></i></a>
+                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Balance Sheet"
+                                                href="{{ route('admin.audit-wise-auditor-balance-sheet', encrypt_decrypt($audit->id, 'encrypt')) }}"
+                                                class="btn btn-sm btn-success"><i class="fa fa-credit-card"></i></a>    
                                         </td>
                                     </tr>
                                 @empty

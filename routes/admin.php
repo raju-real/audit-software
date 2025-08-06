@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\StepQuestionController;
 use App\Http\Controllers\Admin\SupervisorActivityController;
 use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Admin\TwoFactorSetupController;
+use App\Http\Controllers\XlPreview;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,24 +80,26 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
     // ===================================================================
     // AUDITOR ACTIVITY ROUTES
     // ===================================================================
-    Route::controller(AuditorActivityController::class)->group(function() {
-        Route::get('auditor-audits','auditList')->name('auditor-audits');
-        Route::get('auditor-audit-steps/{audit_id}','auditSteps')->name('auditor-audit-steps');
-        Route::get('auditor-step-questions/{step_id}','stepQuestions')->name('auditor-step-questions');
-        Route::get('auditor-preview-questions/{step_id}','previewQuestions')->name('auditor-preview-questions');
-        Route::put('submit-answer/{step_id}','submitAnswer')->name('submit-answer');
-        Route::get('auditor-step-details/{step_id}','stepDetails')->name('auditor-step-details');
+    Route::controller(AuditorActivityController::class)->group(function () {
+        Route::get('auditor-audits', 'auditList')->name('auditor-audits');
+        Route::get('auditor-audit-steps/{audit_id}', 'auditSteps')->name('auditor-audit-steps');
+        Route::get('auditor-step-questions/{step_id}', 'stepQuestions')->name('auditor-step-questions');
+        Route::get('auditor-preview-questions/{step_id}', 'previewQuestions')->name('auditor-preview-questions');
+        Route::put('submit-answer/{step_id}', 'submitAnswer')->name('submit-answer');
+        Route::get('auditor-step-details/{step_id}', 'stepDetails')->name('auditor-step-details');
+        Route::get('audit-wise-auditor-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-auditor-balance-sheet');
+        Route::post('auditor-upload-balance-sheet/{audit_id}', 'uploadBalanceSheet')->name('auditor-upload-balance-sheet');
     });
     // ===================================================================
     // Supervisor ACTIVITY ROUTES
     // ===================================================================
-    Route::controller(SupervisorActivityController::class)->group(function() {
-        Route::get('supervisor-audits','auditList')->name('supervisor-audits');
-        Route::get('supervisor-audit-steps/{audit_id}','auditSteps')->name('supervisor-audit-steps');
-        Route::get('review-step-answer/{step_id}','reviewStepAnswer')->name('review-step-answer');
-        Route::get('supervised-step-status','changeStatus')->name('supervised-step-status');
-        Route::post('supervisor-return-audit/{step_id}','returnAudit')->name('supervisor-return-audit');
-        Route::post('supervisor-reject-audit/{step_id}','rejectAudit')->name('supervisor-reject-audit');
+    Route::controller(SupervisorActivityController::class)->group(function () {
+        Route::get('supervisor-audits', 'auditList')->name('supervisor-audits');
+        Route::get('supervisor-audit-steps/{audit_id}', 'auditSteps')->name('supervisor-audit-steps');
+        Route::get('review-step-answer/{step_id}', 'reviewStepAnswer')->name('review-step-answer');
+        Route::get('supervised-step-status', 'changeStatus')->name('supervised-step-status');
+        Route::post('supervisor-return-audit/{step_id}', 'returnAudit')->name('supervisor-return-audit');
+        Route::post('supervisor-reject-audit/{step_id}', 'rejectAudit')->name('supervisor-reject-audit');
     });
     // ===================================================================
     // ONLY FOR ADMINISTRATOR ROUTES
@@ -105,7 +108,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::resource('audits', AuditController::class);
         Route::controller(AuditController::class)->group(function () {
             Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
-            Route::get('audit-wise-activators','auditActivators')->name('audit-wise-activators');
+            Route::get('audit-wise-activators', 'auditActivators')->name('audit-wise-activators');
         });
         // Settings
         Route::controller(SettingController::class)->group(function () {
@@ -113,6 +116,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
             Route::put('update-site-settings', 'updateSiteSettings')->name('update-site-settings');
         });
     });
+
+    Route::post('xl-file-preview', XlPreview::class)->name('xl-file-preview');
+
 });
 
 

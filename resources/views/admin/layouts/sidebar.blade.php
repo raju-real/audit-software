@@ -53,7 +53,7 @@
         @endif
 
         @if(authUserRole() == 'administrator')
-        <li>
+        <li class="{{ isMainMenuActive('audit-steps,question-list,add-question,edit-question') }}">
             <a href="{{ route('admin.audit-steps.index') }}"
                 class="waves-effect {{ isMainMenuActive('audit-steps,step-questions,question-list,add-question,edit-question') }}">
                 <i class="bx bx-list-ol"></i>
