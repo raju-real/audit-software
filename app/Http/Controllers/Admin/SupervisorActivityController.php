@@ -119,4 +119,10 @@ class SupervisorActivityController extends Controller
          return redirect()->route('admin.supervisor-audit-steps', encrypt_decrypt($step_info->audit_id, 'encrypt'))->with(infoMessage());
         }
     }
+
+    public function balanceSheet($audit_id = null)
+    {
+        $audit = Audit::with('balance_sheet')->where('id', encrypt_decrypt($audit_id, 'decrypt'))->firstOrFail();
+        return view('admin.audits.audit_balance_sheet', compact('audit'));
+    }
 }

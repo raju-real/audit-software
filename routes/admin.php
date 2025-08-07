@@ -30,7 +30,7 @@ use App\Http\Controllers\XlPreview;
 Route::view('/', 'admin.auth.app2')->name('home');
 Route::post('admin-login', AdminLogin::class)->middleware('throttle:5,1')->name('admin-login');
 
-Route::view('permission-denied', 'admin.permission_denied')->name('permission-denied');
+Route::view('permission-denied', 'admin.permission_denied')->name('admin.permission-denied');
 
 Route::controller(TwoFactorController::class)->middleware('auth')->group(function () {
     Route::get('/2fa/verify', 'show')->name('admin.2fa.verify');
@@ -100,6 +100,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::get('supervised-step-status', 'changeStatus')->name('supervised-step-status');
         Route::post('supervisor-return-audit/{step_id}', 'returnAudit')->name('supervisor-return-audit');
         Route::post('supervisor-reject-audit/{step_id}', 'rejectAudit')->name('supervisor-reject-audit');
+        Route::get('audit-wise-supervisor-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-supervisor-balance-sheet');
     });
     // ===================================================================
     // ONLY FOR ADMINISTRATOR ROUTES
@@ -109,6 +110,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::controller(AuditController::class)->group(function () {
             Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
             Route::get('audit-wise-activators', 'auditActivators')->name('audit-wise-activators');
+            Route::get('audit-wise-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-balance-sheet');
         });
         // Settings
         Route::controller(SettingController::class)->group(function () {

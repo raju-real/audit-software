@@ -17,32 +17,32 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingSearch">
                         <button class="accordion-button {{ request()->query() ? '' : 'collapsed' }}" type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#collapseSearch"
-                                aria-expanded="{{ request()->query() ? 'true' : 'false' }}"
-                                aria-controls="collapseSearch">
+                            data-bs-toggle="collapse" data-bs-target="#collapseSearch"
+                            aria-expanded="{{ request()->query() ? 'true' : 'false' }}" aria-controls="collapseSearch">
                             Search
                         </button>
                     </h2>
                     <div id="collapseSearch" class="accordion-collapse collapse {{ request()->query() ? 'show' : '' }}"
-                         aria-labelledby="headingSearch"
-                         data-bs-parent="#accordionSearch">
+                        aria-labelledby="headingSearch" data-bs-parent="#accordionSearch">
                         <div class="accordion-body">
                             <form method="GET" action="{{ route('admin.auditor-audits') }}">
                                 <div class="row">
                                     <div class="col-md-4 pb-4">
                                         <div class="form-group">
                                             <input type="search" name="search" class="form-control"
-                                                   placeholder="Search by Audit Number, Title" value="{{ request('search') ?? '' }}">
+                                                placeholder="Search by Audit Number, Title"
+                                                value="{{ request('search') ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <select name="status" class="form-select">
-                                                <option value="" {{ !isset(request()->status) ? 'selected' : '' }}>Workflow Status</option>
-                                                @foreach(getAuditStepStatus() as $status)
-                                                    <option
-                                                        value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>{{ $status->title }}</option>
+                                                <option value="" {{ !isset(request()->status) ? 'selected' : '' }}>
+                                                    Workflow Status</option>
+                                                @foreach (getAuditStepStatus() as $status)
+                                                    <option value="{{ $status->value }}"
+                                                        {{ request('status') === $status->value ? 'selected' : '' }}>
+                                                        {{ $status->title }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -108,9 +108,9 @@
                                             <a data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Steps"
                                                 href="{{ route('admin.auditor-audit-steps', encrypt_decrypt($audit->id, 'encrypt')) }}"
                                                 class="btn btn-sm btn-info"><i class="fa fa-tasks"></i></a>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Balance Sheet"
+                                            <a target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Balance Sheet"
                                                 href="{{ route('admin.audit-wise-auditor-balance-sheet', encrypt_decrypt($audit->id, 'encrypt')) }}"
-                                                class="btn btn-sm btn-success"><i class="fa fa-credit-card"></i></a>    
+                                                class="btn btn-sm btn-success"><i class="fa fa-credit-card"></i></a>
                                         </td>
                                     </tr>
                                 @empty

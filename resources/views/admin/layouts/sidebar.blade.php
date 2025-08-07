@@ -30,7 +30,7 @@
 
         @if (authUserRole() !== 'administrator')
             <li
-                class="{{ isMainMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer,auditor-step-details') }}">
+                class="{{ isMainMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer,auditor-step-details,audit-wise-auditor-balance-sheet,audit-wise-supervisor-balance-sheet') }}">
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
                     <i class='bx  bx-folder'></i>
                     <span>My Audit</span>
@@ -38,13 +38,13 @@
                 <ul class="sub-menu" aria-expanded="false">
                     <li>
                         <a href="{{ route('admin.auditor-audits') }}"
-                            class="{{ isSubMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,auditor-step-details') }}">
+                            class="{{ isSubMenuActive('auditor-audits,auditor-audit-steps,auditor-step-questions,auditor-step-details,audit-wise-auditor-balance-sheet') }}">
                             <i class="bx bx-chevron-right"></i> As Auditor
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.supervisor-audits') }}"
-                            class="{{ isSubMenuActive('supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer') }}">
+                            class="{{ isSubMenuActive('supervisor-audits,supervisor-audit-steps,supervisor-step-questions,review-step-answer,audit-wise-supervisor-balance-sheet') }}">
                             <i class="bx bx-chevron-right"></i> As Supervisor
                         </a>
                     </li>

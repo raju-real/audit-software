@@ -47,8 +47,8 @@
                         </div>
 
                         {{-- Preview Section --}}
-                        <div class="d-none" id="preview-wrapper" style="width: 100%; overflow-x: auto;">
-                            <div id="html-preview"></div>
+                        <div class="d-none" id="preview-wrapper" style="max-width: 100%;min-width: 100%">
+                            <div id="html-preview" style="width: 100%"></div>
                             <br>
                         </div>
 
@@ -61,11 +61,12 @@
                     <hr>
 
                     {{-- Display Saved Balance Sheet --}}
+                    @if(isset($audit->balance_sheet))
                     <table class="table table-striped">
                         <tr>
                             <th>Last Updated At</th>
                             <td>:</td>
-                            <td>{{ date('d M, y', strtotime($audit->balance_sheet->created_at)) }}</td>
+                            <td>{{ date('d M, y', strtotime($audit->balance_sheet->created_at)) ?? '' }}</td>
                         </tr>
                         <tr>
                             <th>Last Updated By</th>
@@ -73,11 +74,12 @@
                             <td>{{ $audit->balance_sheet->user->name ?? '' }}</td>
                         </tr>
                     </table>
+                    @endif
 
-                    <div class="table-responsive border rounded shadow-sm p-3 bg-white"
-                        style="max-width: 100%; overflow-x: auto;">
+                    <div class="border rounded shadow-sm bg-white"
+                        style="max-width: 100%;">
                         <div class="table-container" style="width: 100%;">
-                            {!! $audit->balance_sheet->balance_sheet ?? '<p class="text-muted">No balance sheet uploaded.</p>' !!}
+                            {!! $audit->balance_sheet->balance_sheet ?? '<p class="alert alert-danger">No balance sheet uploaded.</p>' !!}
                         </div>
                     </div>
 

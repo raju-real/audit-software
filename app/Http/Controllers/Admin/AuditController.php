@@ -320,4 +320,10 @@ class AuditController extends Controller
 
         return view('admin.audits.audit_activators', compact('audits'));
     }
+
+    public function balanceSheet($audit_id = null)
+    {
+        $audit = Audit::with('balance_sheet')->where('id', encrypt_decrypt($audit_id, 'decrypt'))->firstOrFail();
+        return view('admin.audits.audit_balance_sheet', compact('audit'));
+    }
 }

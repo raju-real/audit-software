@@ -23,6 +23,14 @@
                         <div class="col-md-6">
                             <table class="table table-striped">
                                 <tr>
+                                    <th>Balance Sheet</th>
+                                    <td>:</td>
+                                    <td><a target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Balance Sheet"
+                                                href="{{ route('admin.audit-wise-balance-sheet', encrypt_decrypt($audit->id, 'encrypt')) }}"
+                                                class="btn btn-sm btn-success"><i class="fa fa-credit-card"></i></a></td>
+                                </tr>
+                                <tr>
                                     <th>Audit No.</th>
                                     <td>:</td>
                                     <td>{{ $audit->audit_number ?? '' }}</td>

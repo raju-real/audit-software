@@ -124,6 +124,7 @@ class AuditorActivityController extends Controller
     {
         $audit = Audit::with('balance_sheet')->where('id', encrypt_decrypt($audit_id, 'decrypt'))->firstOrFail();
         return view('admin.audits.auditor_balance_sheet_with_client_side_preview', compact('audit'));
+        //return view('admin.audits.auditor_balance_sheet', compact('audit'));
     }
 
     public function uploadBalanceSheet(Request $request, $audit_id = null)
@@ -154,6 +155,6 @@ class AuditorActivityController extends Controller
         $balance_sheet->created_by = Auth::id();
         $balance_sheet->save();
 
-        return redirect()->route('admin.audit-wise-auditor-balance-sheet', encrypt_decrypt($audit_id, 'encrypt'));
+        return redirect()->route('admin.audit-wise-auditor-balance-sheet', encrypt_decrypt($audit_id, 'encrypt'))->with(infoMessage());
     }
 }
