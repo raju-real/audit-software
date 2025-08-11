@@ -2,7 +2,65 @@
 @section('title', 'Balance Sheet')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/pages/balance_sheet.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/admin/css/pages/balance_sheet.css') }}"> --}}
+    <style>
+        .table-container table {
+    width: 100% !important;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.table-container table,
+.table-container th,
+.table-container td {
+    border: 1px solid #dee2e6;
+}
+
+.table-container th,
+.table-container td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.table-container tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* New styles for preview width fix */
+#preview-wrapper {
+    width: 100% !important;
+    /* overflow-x: auto; */
+}
+
+#html-preview table {
+    width: 100% !important;
+    table-layout: fixed;
+}
+
+.custom-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+}
+
+.custom-preview-table th,
+.custom-preview-table td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+    border: 1px solid #dee2e6;
+}
+
+.custom-preview-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+    </style>
 @endpush
 
 @section('content')
@@ -18,6 +76,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @if($audit->balance_sheet == null) 
                     {{-- Upload Form --}}
                     <form action="{{ route('admin.auditor-upload-balance-sheet', $audit->id) }}" method="POST"
                         id="prevent-form" enctype="multipart/form-data">
@@ -59,7 +118,7 @@
 
                     {{-- Divider --}}
                     <hr>
-
+                    @endif
                     {{-- Display Saved Balance Sheet --}}
                     @if(isset($audit->balance_sheet))
                     <table class="table table-striped">
