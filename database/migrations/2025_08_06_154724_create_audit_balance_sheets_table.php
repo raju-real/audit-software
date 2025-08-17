@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('audit_id');
             $table->longText('balance_sheet')->nullable();
+            $table->string('balance_sheet_path',255)->nullable();
             $table->integer('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();

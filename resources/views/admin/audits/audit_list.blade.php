@@ -144,7 +144,7 @@
                                             <label class="custom-label-margin" for="audit-{{ $loop->index + 1 }}"
                                                 data-on-label="Yes" data-off-label="No"></label>
                                         </td>
-                                        <td class="text-center">
+                                        <td>
                                             <a data-bs-toggle="tooltip" data-bs-placement="top" title="Show Details"
                                                 href="{{ route('admin.audits.show', $audit->slug) }}"
                                                 class="btn btn-sm btn-soft-info"><i class="fa fa-eye"></i></a>

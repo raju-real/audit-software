@@ -149,12 +149,29 @@ class AuditorActivityController extends Controller
         ]);
         AuditBalanceSheet::where('audit_id', $audit_id)->delete();
 
+        $audit_info = Audit::findOrFail($audit_id);
+
         $balance_sheet = new AuditBalanceSheet();
         $balance_sheet->audit_id = $audit_id;
         $balance_sheet->balance_sheet = $htmlContent;
+
+        $base_folder = 'documents/audit/';
+        $sub_folder = $audit_info->financial_year->financial_year . '/' . $audit_info->organization->slug;
+        $sheet_folder = $base_folder.$sub_folder;
+
+        $balance_sheet->balance_sheet_path = uploadFile($request->file('balance_sheet'),$sheet_folder);
         $balance_sheet->created_by = Auth::id();
         $balance_sheet->save();
 
         return redirect()->route('admin.audit-wise-auditor-balance-sheet', encrypt_decrypt($audit_id, 'encrypt'))->with(infoMessage());
+    }
+
+    public function deleteBalanceSheet($id = null) {
+        $balance_sheet = AuditBalanceSheet::findOrFail($id);
+        if(file_exists($balance_sheet->balance_sheet_path)) {
+            unlink($balance_sheet->balance_sheet_path);
+        }
+        $balance_sheet->delete();
+        return redirect()->back()->with(deleteMessage());
     }
 }

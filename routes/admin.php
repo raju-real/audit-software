@@ -89,6 +89,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
         Route::get('auditor-step-details/{step_id}', 'stepDetails')->name('auditor-step-details');
         Route::get('audit-wise-auditor-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-auditor-balance-sheet');
         Route::post('auditor-upload-balance-sheet/{audit_id}', 'uploadBalanceSheet')->name('auditor-upload-balance-sheet');
+        Route::delete('auditor-delete-balance-sheet/{sheet_id}', 'deleteBalanceSheet')->name('auditor-delete-balance-sheet');
     });
     // ===================================================================
     // Supervisor ACTIVITY ROUTES
@@ -111,6 +112,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
             Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
             Route::get('audit-wise-activators', 'auditActivators')->name('audit-wise-activators');
             Route::get('audit-wise-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-balance-sheet');
+            Route::delete('delete-balance-sheet/{sheet_id}','deleteBalanceSheet')->name('delete-balance-sheet');
         });
         // Settings
         Route::controller(SettingController::class)->group(function () {
@@ -120,7 +122,9 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
     });
 
     Route::post('xl-file-preview', XlPreview::class)->name('xl-file-preview');
-
+    Route::get('download-balance-sheet/{audit}', function (App\Models\Audit $audit) {
+            return response()->download($audit->balance_sheet->balance_sheet_path);
+        })->name('download-balance-sheet');
 });
 
 

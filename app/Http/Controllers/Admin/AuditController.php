@@ -5,21 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Models\User;
 use App\Models\Audit;
 use App\Models\Company;
+use App\Models\AuditStep;
 use Illuminate\Support\Str;
 use App\Models\AuditAuditor;
+use App\Models\Organization;
 use Illuminate\Http\Request;
+use App\Models\FinancialYear;
 use App\Models\AuditSupervisor;
 use Illuminate\Validation\Rule;
+use App\Models\AuditAndStepPair;
+use App\Models\AuditBalanceSheet;
+use App\Models\AuditStepQuestion;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AuditAndStepQuestionPair;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\AuditValidationRequest;
-use App\Models\AuditAndStepPair;
-use App\Models\AuditAndStepQuestionPair;
-use App\Models\AuditStep;
-use App\Models\AuditStepQuestion;
-use App\Models\FinancialYear;
-use App\Models\Organization;
-use Illuminate\Support\Facades\Auth;
 
 class AuditController extends Controller
 {
@@ -325,5 +326,14 @@ class AuditController extends Controller
     {
         $audit = Audit::with('balance_sheet')->where('id', encrypt_decrypt($audit_id, 'decrypt'))->firstOrFail();
         return view('admin.audits.audit_balance_sheet', compact('audit'));
+    }
+
+    public function deleteBalanceSheet($id = null) {
+        $balance_sheet = AuditBalanceSheet::findOrFail($id);
+        if(file_exists($balance_sheet->balance_sheet_path)) {
+            unlink($balance_sheet->balance_sheet_path);
+        }
+        $balance_sheet->delete();
+        return redirect()->back()->with(deleteMessage());
     }
 }

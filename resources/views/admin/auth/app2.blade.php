@@ -39,7 +39,7 @@
                 <div class="col-md-9 col-lg-6 col-xl-5">
                     {{-- <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
                         class="img-fluid" alt="Sample image"> --}}
-                    <img src="{{ asset('assets/common/images/itoring-vector-illustration-data-analysis-concept-design-isolated_929545-1064.jpg') }}"
+                    <img src="{{ asset('assets/common/images/Messenger_creation_C7D68908-1256-46BD-B329-B9CF1F8B354B.png') }}"
                         class="img-fluid" alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">

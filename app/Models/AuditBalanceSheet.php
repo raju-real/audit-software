@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AuditBalanceSheet extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     protected $table = 'audit_balance_sheets';
     protected $guarded = [];
 
