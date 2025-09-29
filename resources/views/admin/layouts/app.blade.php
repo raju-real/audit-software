@@ -198,6 +198,8 @@
     {{-- Slim Select  --}}
     <script src="{{ asset('assets/admin/partial/js/slimselect.min.js') }}"></script>
     <script src="{{ asset('assets/admin/partial/js/slimselect.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
 
     {{-- Custom created js --}}

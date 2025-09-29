@@ -61,6 +61,15 @@
             </a>
         </li>
         @endif
+        @if(authUserRole() == 'administrator')
+        <li class="{{ isMainMenuActive('form-builders') }}">
+            <a href="{{ route('admin.form-builders.index') }}"
+                class="waves-effect {{ isMainMenuActive('form-builders') }}">
+                <i class="bx bx-folder-open"></i>
+                <span>Form Builder</span>
+            </a>
+        </li>
+        @endif
 
         @if(authUserRole() == 'administrator')
         <li class="{{ isMainMenuActive('designations,staffs') }}">

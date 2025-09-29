@@ -169,12 +169,32 @@ if (!function_exists('imageInfo')) {
     }
 }
 
+if (!function_exists('fileType')) {
+    function fileType($file): string
+    {
+        $mime = $file->getClientMimeType(); // e.g. image/png, application/pdf
+        if (str_starts_with($mime, 'image/')) {
+            return 'image';
+        }else {
+            return 'file';
+        }
+    }
+}
+
+
 if (!function_exists('isImage')) {
     function isImage($file): bool
     {
-        return $fileType = $file->getClientMimeType();
+        $fileType = $file->getClientMimeType();
         $text = explode('/', $fileType)[0];
         return $text == "image";
+    }
+}
+
+if (!function_exists('fileMimeType')) {
+    function fileMimeType($file): bool
+    {
+        return  $file->getClientMimeType();
     }
 }
 
@@ -507,19 +527,21 @@ if (!function_exists('isStepActive')) {
     }
 }
 
-if(! function_exists('auditWiseAuditors')) {
-    function auditWiseAuditors($audit_id = null) {
-        $auditors = AuditAuditor::where('audit_id',$audit_id)->pluck('user_id');
-        $users = User::whereIn('id',$auditors)->pluck('name')->toArray();
-        return implode(', ',$users);
+if (! function_exists('auditWiseAuditors')) {
+    function auditWiseAuditors($audit_id = null)
+    {
+        $auditors = AuditAuditor::where('audit_id', $audit_id)->pluck('user_id');
+        $users = User::whereIn('id', $auditors)->pluck('name')->toArray();
+        return implode(', ', $users);
     }
 }
 
-if(! function_exists('auditWiseSupervisors')) {
-    function auditWiseSupervisors($audit_id = null) {
-        $auditors = AuditSupervisor::where('audit_id',$audit_id)->pluck('user_id');
-        $users = User::whereIn('id',$auditors)->pluck('name')->toArray();
-        return implode(', ',$users);
+if (! function_exists('auditWiseSupervisors')) {
+    function auditWiseSupervisors($audit_id = null)
+    {
+        $auditors = AuditSupervisor::where('audit_id', $audit_id)->pluck('user_id');
+        $users = User::whereIn('id', $auditors)->pluck('name')->toArray();
+        return implode(', ', $users);
     }
 }
 
@@ -529,7 +551,7 @@ if (! function_exists('auditStepStatusWiseCount')) {
         return Audit::whereHas('audit_steps', function ($q) use ($status) {
             $q->where('status', $status);
         })
-        ->count();
+            ->count();
     }
 }
 
@@ -540,25 +562,23 @@ if (! function_exists('supervisorStepStatusWiseCount')) {
         return Audit::whereHas('supervisors', function ($q) use ($supervisorId) {
             $q->where('user_id', $supervisorId);
         })
-        ->whereHas('audit_steps', function ($q) use ($status) {
-            $q->where('status', $status);
-        })
-        ->count();
+            ->whereHas('audit_steps', function ($q) use ($status) {
+                $q->where('status', $status);
+            })
+            ->count();
     }
 }
 
 if (! function_exists('auditorStepStatusWiseCount')) {
-    function auditorStepStatusWiseCount( $auditor_id = null, $status = null)
+    function auditorStepStatusWiseCount($auditor_id = null, $status = null)
     {
         $auditorId = $auditor_id ?? Auth::id();
         return Audit::whereHas('auditors', function ($q) use ($auditorId) {
             $q->where('user_id', $auditorId);
         })
-        ->whereHas('audit_steps', function ($q) use ($status) {
-            $q->where('status', $status);
-        })
-        ->count();
+            ->whereHas('audit_steps', function ($q) use ($status) {
+                $q->where('status', $status);
+            })
+            ->count();
     }
 }
-
-

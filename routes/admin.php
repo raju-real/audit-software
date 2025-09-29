@@ -1,25 +1,26 @@
 <?php
 
+use App\Http\Controllers\XlPreview;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Admin\AdminLogin;
 use App\Http\Controllers\TwoFactorController;
+use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\AuditController;
-use App\Http\Controllers\Admin\AuditorActivityController;
 use App\Http\Controllers\Admin\StaffController;
-use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\FinancialYearController;
 use App\Http\Controllers\Admin\AuditStepController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\FormBuilderController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\StepQuestionController;
+use App\Http\Controllers\Admin\AuditorActivityController;
+use App\Http\Controllers\Admin\FormSubmissionController;
 use App\Http\Controllers\Admin\SupervisorActivityController;
-use App\Http\Controllers\Admin\TwoFactorAuthController;
-use App\Http\Controllers\Admin\TwoFactorSetupController;
-use App\Http\Controllers\XlPreview;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,7 +113,7 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
             Route::put('update-audit-status/{id}', 'updateAuditStatus')->name('update-audit-status');
             Route::get('audit-wise-activators', 'auditActivators')->name('audit-wise-activators');
             Route::get('audit-wise-balance-sheet/{audit_id}', 'balanceSheet')->name('audit-wise-balance-sheet');
-            Route::delete('delete-balance-sheet/{sheet_id}','deleteBalanceSheet')->name('delete-balance-sheet');
+            Route::delete('delete-balance-sheet/{sheet_id}', 'deleteBalanceSheet')->name('delete-balance-sheet');
         });
         // Settings
         Route::controller(SettingController::class)->group(function () {
@@ -123,8 +124,24 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
 
     Route::post('xl-file-preview', XlPreview::class)->name('xl-file-preview');
     Route::get('download-balance-sheet/{audit}', function (App\Models\Audit $audit) {
-            return response()->download($audit->balance_sheet->balance_sheet_path);
-        })->name('download-balance-sheet');
+        return response()->download($audit->balance_sheet->balance_sheet_path);
+    })->name('download-balance-sheet');
+
+    // Admin / builder (create forms for an audit)
+    Route::middleware('auth')->group(function () {
+        Route::resource('form-builders', FormBuilderController::class);
+
+        Route::controller(FormController::class)->group(function () { 
+            Route::get('show-form/{id}', 'show')->name('show-form');
+            Route::post('submit-form/{id}', 'submit')->name('submit-form');
+        });
+
+        Route::controller(FormSubmissionController::class)->group(function () { 
+            Route::get('show-submissions/{id}', 'show')->name('show');
+        });
+        
+    });
+
 });
 
 

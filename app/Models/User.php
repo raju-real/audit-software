@@ -55,7 +55,7 @@ class User extends Authenticatable
         $url = "http://66.45.237.70/api.php";
         $data = array(
             'username' => "egrocery",
-            'password' => "49FT2DWZ",
+            'password' => "mahtab@2025",
             'number' => $mobile,
             'message' => $message
         );
