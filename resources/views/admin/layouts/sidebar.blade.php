@@ -62,9 +62,16 @@
         </li>
         @endif
         @if(authUserRole() == 'administrator')
-        <li class="{{ isMainMenuActive('form-builders') }}">
+        {{-- <li class="{{ isMainMenuActive('form-builders') }}">
             <a href="{{ route('admin.form-builders.index') }}"
                 class="waves-effect {{ isMainMenuActive('form-builders') }}">
+                <i class="bx bx-folder-open"></i>
+                <span>Form Builder</span>
+            </a>
+        </li> --}}
+        <li class="{{ isMainMenuActive('forms.create') }}">
+            <a href="{{ route('admin.dynamic-forms.index') }}"
+                class="waves-effect {{ isMainMenuActive('forms.create') }}">
                 <i class="bx bx-folder-open"></i>
                 <span>Form Builder</span>
             </a>

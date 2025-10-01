@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AuditStepQuestion;
 use App\Http\Controllers\XlPreview;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -18,8 +19,9 @@ use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\FormBuilderController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\StepQuestionController;
-use App\Http\Controllers\Admin\AuditorActivityController;
+use App\Http\Controllers\DynamicFormBuilderController;
 use App\Http\Controllers\Admin\FormSubmissionController;
+use App\Http\Controllers\Admin\AuditorActivityController;
 use App\Http\Controllers\Admin\SupervisorActivityController;
 
 /*
@@ -129,19 +131,35 @@ Route::group(['as' => 'admin.', 'middleware' => ['auth', '2fa.verified']], funct
 
     // Admin / builder (create forms for an audit)
     Route::middleware('auth')->group(function () {
-        Route::resource('form-builders', FormBuilderController::class);
+        // Dynami Form Builder
+        Route::resource('dynamic-forms', DynamicFormBuilderController::class);
+        Route::controller(DynamicFormBuilderController::class)->group(function () {
+            // Form submittion
+            Route::get('submit-dynamic-form/{id}', 'submitForm')->name('submit-dynamic-form');
+            Route::post('dynamic-form-submit/{id}', 'submit')->name('dynamic-form-submit');
+            Route::get('download-dynamic-form/{id}', 'downloadPdf')->name('download-dynamic-form');
+        });
 
-        Route::controller(FormController::class)->group(function () { 
+
+        // Form Builder Custom
+        Route::resource('form-builders', FormBuilderController::class);
+        Route::controller(FormController::class)->group(function () {
             Route::get('show-form/{id}', 'show')->name('show-form');
             Route::post('submit-form/{id}', 'submit')->name('submit-form');
         });
-
-        Route::controller(FormSubmissionController::class)->group(function () { 
+        Route::controller(FormSubmissionController::class)->group(function () {
             Route::get('show-submissions/{id}', 'show')->name('show');
         });
-        
     });
 
+
+    Route::get('audit-step-wise-questions/{step_id}', function ($step_id) {
+        return AuditStepQuestion::where('audit_step_id', $step_id)
+        ->select('id', 'audit_step_id', 'question', 'sorting_serial')
+        ->active()
+        ->sort()
+        ->get();
+    });
 });
 
 

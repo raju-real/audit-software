@@ -72,6 +72,13 @@ if (!function_exists('starSign')) {
     }
 }
 
+if (!function_exists('tooltip')) {
+    function tooltip($title = "", $placement = "top"): string
+    {
+        return 'data-bs-toggle="tooltip" data-bs-placement="' . $placement . '" title="' . $title . '"';
+    }
+}
+
 if (!function_exists('displayError')) {
     function displayError(string $error = "Something went wrong!"): string
     {
@@ -175,7 +182,7 @@ if (!function_exists('fileType')) {
         $mime = $file->getClientMimeType(); // e.g. image/png, application/pdf
         if (str_starts_with($mime, 'image/')) {
             return 'image';
-        }else {
+        } else {
             return 'file';
         }
     }
@@ -582,3 +589,104 @@ if (! function_exists('auditorStepStatusWiseCount')) {
             ->count();
     }
 }
+
+
+if (!function_exists('formBuilderRender')) {
+    function formBuilderRender($field)
+    {
+        $html = '';
+        $required = !empty($field->required) ? 'required' : '';
+
+        // Determine placeholder
+        $placeholder = $field->placeholder ?? '';
+
+        // Add label if exists (except signature/paragraph)
+        if (!empty($field->label) && !in_array($field->type, ['signature', 'paragraph'])) {
+            $html .= '<label class="form-label">' . $field->label;
+            if (!empty($field->required)) {
+                $html .= ' <span class="text-danger">*</span>';
+            }
+            $html .= '</label>';
+        }
+
+        switch ($field->type) {
+            case 'text':
+            case 'number':
+            case 'email':
+            case 'url':
+            case 'phone':
+                $html .= '<input type="' . $field->type . '" name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '>';
+                break;
+
+            case 'date':
+                // Only date field gets datepicker
+                $html .= '<input type="text" name="' . ($field->name ?? '') . '" class="form-control datepicker" placeholder="' . $placeholder . '" ' . $required . '>';
+                break;
+
+            case 'textarea':
+                $html .= '<textarea name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '></textarea>';
+                break;
+
+            case 'paragraph':
+                // Unique name for paragraph
+                $fieldName = $field->name ?? 'paragraph_' . ($field->id ?? uniqid());
+                $fieldValue = isset($field->label) ? html_entity_decode(strip_tags($field->label)) : '';
+                $html .= '<textarea name="' . $fieldName . '" class="form-control bg-readonly" placeholder="' . $placeholder . '" readonly>' . e($fieldValue) . '</textarea>';
+                break;
+
+            case 'select':
+                $html .= '<select name="' . ($field->name ?? '') . '" class="form-control" ' . $required . '>';
+                if (!empty($field->values)) {
+                    foreach ($field->values as $option) {
+                        $html .= '<option value="' . $option->value . '">' . $option->label . '</option>';
+                    }
+                }
+                $html .= '</select>';
+                break;
+
+            case 'checkbox':
+                foreach ($field->values ?? [] as $option) {
+                    $html .= '<div class="form-check">';
+                    $html .= '<input class="form-check-input" type="checkbox" name="' . ($field->name ?? '') . '[]" value="' . $option->value . '" id="' . ($field->name ?? '') . '_' . $option->value . '" ' . $required . '>';
+                    $html .= '<label class="form-check-label" for="' . ($field->name ?? '') . '_' . $option->value . '">' . $option->label . '</label>';
+                    $html .= '</div>';
+                }
+                break;
+
+            case 'radio':
+                foreach ($field->values ?? [] as $option) {
+                    $html .= '<div class="form-check">';
+                    $html .= '<input class="form-check-input" type="radio" name="' . ($field->name ?? '') . '" value="' . $option->value . '" id="' . ($field->name ?? '') . '_' . $option->value . '" ' . $required . '>';
+                    $html .= '<label class="form-check-label" for="' . ($field->name ?? '') . '_' . $option->value . '">' . $option->label . '</label>';
+                    $html .= '</div>';
+                }
+                break;
+
+            case 'file':
+                $html .= '<input type="file" name="' . ($field->name ?? '') . '" class="form-control" ' . $required . '>';
+                break;
+
+            case 'signature':
+                $html .= '<div class="signature-wrapper">';
+                if (!empty($field->label)) {
+                    $html .= '<label class="form-label">' . $field->label;
+                    if (!empty($field->required)) {
+                        $html .= ' <span class="text-danger">*</span>';
+                    }
+                    $html .= '</label>';
+                }
+                $html .= '<canvas id="sigpad_' . ($field->id ?? $field->name) . '" class="signature-pad"></canvas>';
+                $html .= '<input type="hidden" name="field_' . ($field->id ?? $field->name) . '_signature" id="siginput_' . ($field->id ?? $field->name) . '" ' . $required . '>';
+                $html .= '<button type="button" class="btn btn-sm btn-secondary mt-2 clear-signature" data-target="sigpad_' . ($field->id ?? $field->name) . '">Clear</button>';
+                $html .= '</div>';
+                break;
+
+            default:
+                $html .= '<input type="text" name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '>';
+                break;
+        }
+
+        return $html;
+    }
+}
+

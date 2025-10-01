@@ -58,7 +58,8 @@ class FormBuilderController extends Controller
     {
         $form = Form::findOrFail(encrypt_decrypt($id, 'decrypt'));
         $form->load('fields');
-        return view('forms.builder.form_add_edit', compact('form'));
+        $route = route('admin.form-builders.update', $form->id);
+        return view('forms.builder.form_add_edit', compact('form', 'route'));
     }
 
     public function update(Request $request, $id)
