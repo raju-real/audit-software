@@ -15,12 +15,12 @@
 
         /* PDF Header on Every Page */
         @page {
-            margin: 120px 30px 50px 30px;
+            margin: 100px 15px 30px 15px;
             /* top, right, bottom, left */
         }
 
         @page {
-            margin: 120px 30px 50px 30px;
+            margin: 100px 15px 30px 15px;
             /* top, right, bottom, left */
         }
 
@@ -30,7 +30,7 @@
             /* same as negative of top margin */
             left: 0;
             right: 0;
-            height: 100px;
+            height: 80px;
             border-bottom: 1px solid #ccc;
             padding: 10px 0;
         }
@@ -47,11 +47,11 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 900px;
+            width: 100%;
+            max-width: 1000px;
             margin: 0 auto;
             background: #fff;
-            padding: 20px 30px;
+            padding: 3px 3px;
             border-radius: 10px;
         }
 
@@ -62,15 +62,15 @@
         }
 
         .field-card {
-            margin-bottom: 15px;
-            padding: 10px 15px;
+            margin-bottom: 3px;
+            padding: 8px 8px;
             background: #fafafa;
             border-radius: 6px;
         }
 
         .field-label {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             color: #495057;
         }
 
@@ -106,6 +106,26 @@
             margin: 0 2px 2px 0;
         }
 
+        .field-row {
+            display: flex;
+            justify-content: flex-start;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .field-label-inline {
+            font-weight: 600;
+            color: #495057;
+            white-space: nowrap;
+        }
+
+        .field-value-inline {
+            color: #212529;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
         /* Clear floats */
         .clearfix::after {
             content: "";
@@ -124,9 +144,10 @@
                     <img src="{{ asset(siteSettings()['logo']) }}" alt="Company Logo" style="height:60px;">
                 </td>
                 <td style="width:50%; text-align:right; font-size:12px; line-height:1.4;">
-                    <strong>Company Name</strong><br>
-                    123 Street, City, Country<br>
-                    Phone: +123456789 | Email: info@company.com
+                    <strong>{{ siteSettings()['company_name'] ?? '' }}</strong><br>
+                    <address>{{ siteSettings()['address'] ?? '' }} </address>
+                    <p>Email: {{ siteSettings()['company_email'] ?? '' }}</p>
+                    <p>Phone: {{ siteSettings()['company_phone'] ?? '' }}</p>
                 </td>
             </tr>
         </table>
@@ -144,39 +165,58 @@
             @endphp
 
             <div class="field-card">
-                @if ($type !== 'paragraph')
-                    <div class="field-label">{{ $label }}</div>
-                @endif
-
+                {{-- Paragraph Type --}}
                 @if ($type === 'paragraph')
                     <div class="field-value">{!! nl2br(e($value ?? strip_tags($label))) !!}</div>
-                @elseif (is_array($value))
+
+                    {{-- Array (checkboxes / multi-select) --}}
+                @elseif (is_array($value) && $type !== 'file')
+                    <div class="field-label">{{ $label }}</div>
                     <div class="field-value">
                         @foreach ($value as $v)
                             <span class="badge-multi">{{ $v }}</span>
                         @endforeach
                     </div>
+
+                    {{-- File Upload --}}
                 @elseif ($type === 'file' && $value)
-                    @php
-                        $mimeType = \File::mimeType($value);
-                        $isImage = Str::startsWith($mimeType, 'image/');
-                    @endphp
-                    @if ($isImage)
-                        <div class="field-value">
-                            <img class="regular-image" src="{{ asset($value) }}" alt="Uploaded File">
-                        </div>
-                    @endif
+                    <div class="field-label">{{ $label }}</div>
+
+                    <div class="data-value file-preview">
+                        @php
+                            $files = is_array($value) ? $value : [$value]; // Normalize to array
+                        @endphp
+
+                        @foreach ($files as $file)
+                            @php
+                                $mimeType = file_exists($file) ? mime_content_type($file) : null;
+                                $isImage = $mimeType && Str::startsWith($mimeType, 'image/');
+                                $isPdf = $mimeType && Str::endsWith($mimeType, 'pdf');
+                            @endphp
+
+                            @if ($isImage)
+                                <img src="{{ asset($file) }}" alt="Uploaded File" class="regular-image">
+                            @endif
+                        @endforeach
+                    </div>
+                    {{-- Signature --}}
                 @elseif ($type === 'signature' && $value)
+                    <div class="field-label">{{ $label }}</div>
                     <div class="field-value">
                         <img class="signature-image" src="{{ asset($value) }}" alt="Signature">
                     </div>
+
+                    {{-- Normal Text/Number/Date etc → Inline --}}
                 @else
-                    <div class="field-value">{!! nl2br(e($value ?? 'N/A')) !!}</div>
+                    <div class="field-row">
+                        <span class="field-label-inline"><strong>{{ $label }}</strong>:</span>
+                        <span class="field-value-inline">{!! nl2br(e($value ?? 'N/A')) !!}</span>
+                    </div>
                 @endif
             </div>
         @endforeach
-
     </div>
+
 </body>
 
 </html>

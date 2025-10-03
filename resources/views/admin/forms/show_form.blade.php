@@ -30,11 +30,12 @@
         .field-card {
             border: 1px solid #e3e6ea;
             border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+            padding: 0.70rem;
+            margin-bottom: 0.5rem;
             background: #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease-in-out;
+
         }
 
         .field-card:hover {
@@ -107,7 +108,8 @@
                     <!-- PDF Download Button -->
                     <div class="d-flex justify-content-between align-items-center mb-4 no-print">
                         <h4 class="card-title mb-0">{{ $form->title ?? 'Dynamic Form' }} Submission</h4>
-                        <a href="{{ route('admin.download-dynamic-form', $form->id) }}" class="btn btn-primary">
+                        <a target="_blank" href="{{ route('admin.download-dynamic-form', $form->id) }}"
+                            class="btn btn-primary">
                             <i class="mdi mdi-download me-1"></i> Download PDF
                         </a>
                     </div>
@@ -130,32 +132,39 @@
 
 
                                     {{-- File Handling --}}
+                                    {{-- File Handling --}}
                                     @if ($type === 'file' && $value)
-                                        @php
-                                            $mimeType = \File::mimeType($value);
-                                            $isImage = Str::startsWith($mimeType, 'image/');
-                                            $isPdf = Str::endsWith($mimeType, 'pdf');
-                                        @endphp
-
                                         <div class="data-value file-preview">
-                                            @if ($isImage)
-                                                <a href="{{ asset($value) }}" target="_blank">
-                                                    <img src="{{ asset($value) }}" alt="Uploaded File">
-                                                </a>
-                                            @elseif ($isPdf)
-                                                <embed src="{{ asset($value) }}" type="application/pdf" width="100%"
-                                                    height="180px" />
-                                                <div class="mt-2">
-                                                    <a href="{{ asset($value) }}" target="_blank" class="file-link">
-                                                        <i class="mdi mdi-file-pdf-box text-danger me-1"></i> View PDF
+                                            @php
+                                                $files = is_array($value) ? $value : [$value]; // Normalize to array
+                                            @endphp
+
+                                            @foreach ($files as $file)
+                                                @php
+                                                    $mimeType = \File::mimeType($file);
+                                                    $isImage = Str::startsWith($mimeType, 'image/');
+                                                    $isPdf = Str::endsWith($mimeType, 'pdf');
+                                                @endphp
+
+                                                @if ($isImage)
+                                                    <a href="{{ asset($file) }}" target="_blank">
+                                                        <img src="{{ asset($file) }}" alt="Uploaded File">
                                                     </a>
-                                                </div>
-                                            @else
-                                                <a href="{{ asset($value) }}" target="_blank" class="file-link">
-                                                    <i class="mdi mdi-file-document-outline me-1"></i>
-                                                    {{ basename($value) }}
-                                                </a>
-                                            @endif
+                                                @elseif ($isPdf)
+                                                    <embed src="{{ asset($file) }}" type="application/pdf" width="100%"
+                                                        height="180px" />
+                                                    <div class="mt-2">
+                                                        <a href="{{ asset($file) }}" target="_blank" class="file-link">
+                                                            <i class="mdi mdi-file-pdf-box text-danger me-1"></i> View PDF
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <a href="{{ asset($file) }}" target="_blank" class="file-link">
+                                                        <i class="mdi mdi-file-document-outline me-1"></i>
+                                                        {{ basename($file) }}
+                                                    </a>
+                                                @endif
+                                            @endforeach
                                         </div>
 
                                         {{-- Signature --}}

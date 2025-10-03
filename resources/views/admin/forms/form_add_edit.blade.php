@@ -62,17 +62,20 @@
                                     @enderror
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label">Question {!! starSign() !!}</label>
-                                    <select name="question" id="question" class="form-control select2 required-checker"
-                                        required>
+                                    <select name="question" id="question" class="form-control select2 required-checker" data-old-value="{{ $form->question_id ?? '' }}" required >
                                         <option value="">Select Question</option>
                                     </select>
 
                                 </div>
                             </div>
                         </div>
+                        <hr>
 
                         <div class="row mt-2">
                             <div class="col-md-12">

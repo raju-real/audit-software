@@ -2,13 +2,13 @@ $(function () {
     let base_url = AppHelpers.base_url;
 
     // ---------- Load questions on page load ----------
-    const audit_step_id = $('#audit_step').val();
+    const audit_step_id = $("#audit_step").val();
     if (audit_step_id) {
         appendStepWiseQuestions(audit_step_id);
     }
 
     // ---------- On audit step change ----------
-    $(document).on('change', '#audit_step', function () {
+    $(document).on("change", "#audit_step", function () {
         const audit_step_id = $(this).val();
         appendStepWiseQuestions(audit_step_id);
     });
@@ -16,28 +16,36 @@ $(function () {
     // ---------- Function to append questions ----------
     function appendStepWiseQuestions(audit_step_id) {
         // Clear current options
-        $('#question').html('<option value="">Select Question</option>');
+        $("#question").html('<option value="">Select Question</option>');
 
         // Fetch step-wise questions
         $.ajax({
-            url: base_url + '/audit-step-wise-questions/' + audit_step_id,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                console.log(response);
+            url: base_url + "/audit-step-wise-questions/" + audit_step_id,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
                 if (response) {
-                    response.forEach(function(item) {
-                        const option = $('<option></option>')
+                    response.forEach(function (item) {
+                        const option = $("<option></option>")
                             .val(item.id)
                             .text(item.question);
-                        $('#question').append(option);
+
+                        const oldSelectedValue = $("#question").data("old-value");
+                        if (
+                            oldSelectedValue !== undefined &&
+                            oldSelectedValue !== null &&
+                            oldSelectedValue === item.id
+                        ) {
+                            option.attr("selected", "selected");
+                        }
+
+                        $("#question").append(option);
                     });
                 }
-
             },
-            error: function() {
-                console.error('Failed to fetch step-wise questions.');
-            }
+            error: function () {
+                console.error("Failed to fetch step-wise questions.");
+            },
         });
     }
 
@@ -71,6 +79,4 @@ $(function () {
     $("form").on("submit", function () {
         $("#form_json").val(JSON.stringify(fbEditor.actions.getData()));
     });
-
-    
 });

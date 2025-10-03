@@ -86,7 +86,7 @@ class DynamicFormBuilderController extends Controller
     public function submitForm($id)
     {
         $form = DynamicForm::findOrFail($id);
-        return view('admin.forms.submit_form', compact('form'));
+        return view('admin.forms.submit_render', compact('form'));
     }
 
     public function submit(Request $request, $id)
@@ -119,9 +119,9 @@ class DynamicFormBuilderController extends Controller
 
             // Handle signature fields (canvas image from signature pad)
             elseif ($field['type'] === 'signature') {
-                $sigInputName = 'field_' . ($field['id'] ?? $name) . '_signature';
+                //$sigInputName = 'field_' . ($field['id'] ?? $name) . '_signature'; // From helper function
+                $sigInputName = $field['id'] ?? $name;
                 $signatureData = $request->input($sigInputName);
-
                 if (!empty($signatureData)) {
                     $image = str_replace('data:image/png;base64,', '', $signatureData);
                     $image = str_replace(' ', '+', $image);
@@ -198,6 +198,7 @@ class DynamicFormBuilderController extends Controller
         // Decode form structure
         $formStructure = json_decode($form->form_json ?? '[]');
         // Pass both to the Blade for PDF generation
+        //return view('admin.forms.download_form', compact('formStructure', 'responses', 'form'));
         $pdf = Pdf::loadView('admin.forms.download_form', compact('formStructure', 'responses', 'form'));
         // Stream the PDF
         return $pdf->stream($form->title . '.pdf');

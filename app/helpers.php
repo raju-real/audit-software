@@ -592,101 +592,172 @@ if (! function_exists('auditorStepStatusWiseCount')) {
 
 
 if (!function_exists('formBuilderRender')) {
-    function formBuilderRender($field)
+    /**
+     * Render a single field from formBuilder JSON.
+     *
+     * @param  object|array  $field      Field object (stdClass or array) from form JSON
+     * @param  mixed         $value      Prefill value (string/array). Pass $responses[$fieldKey] when available.
+     * @return string
+     */
+    function formBuilderRender($field, $value = null)
     {
+        // normalize object/array access
+        $get = function ($k, $default = null) use ($field) {
+            if (is_array($field)) {
+                return $field[$k] ?? $default;
+            }
+            return $field->$k ?? $default;
+        };
+
         $html = '';
-        $required = !empty($field->required) ? 'required' : '';
 
-        // Determine placeholder
-        $placeholder = $field->placeholder ?? '';
+        // Name generation (must match what you used when saving responses)
+        $fieldName = $get('name') ?? 'field_' . ($get('id') ?? uniqid());
+        $type = $get('type', 'text');
+        $placeholder = $get('placeholder', '');
+        $required = !empty($get('required')) ? 'required' : '';
+        $label = $get('label', '');
 
-        // Add label if exists (except signature/paragraph)
-        if (!empty($field->label) && !in_array($field->type, ['signature', 'paragraph'])) {
-            $html .= '<label class="form-label">' . $field->label;
-            if (!empty($field->required)) {
+        // If no $value passed, attempt old() Laravel input (useful after validation error)
+        if ($value === null) {
+            $value = old($fieldName);
+        }
+
+        // Add label for non-signature / non-paragraph fields
+        if (!empty($label) && !in_array($type, ['signature', 'paragraph'])) {
+            $html .= '<label class="form-label">' . e($label);
+            if (!empty($get('required'))) {
                 $html .= ' <span class="text-danger">*</span>';
             }
             $html .= '</label>';
         }
 
-        switch ($field->type) {
+        // helper to read option value/label robustly (array or object)
+        $readOpt = function ($opt) {
+            if (is_array($opt)) {
+                $v = $opt['value'] ?? ($opt['label'] ?? null);
+                $l = $opt['label'] ?? ($opt['value'] ?? $v);
+            } else {
+                $v = $opt->value ?? ($opt->label ?? null);
+                $l = $opt->label ?? ($opt->value ?? $v);
+            }
+            return [(string)$v, (string)$l];
+        };
+
+        switch ($type) {
             case 'text':
             case 'number':
             case 'email':
             case 'url':
             case 'phone':
-                $html .= '<input type="' . $field->type . '" name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '>';
+                $html .= '<input type="' . $type . '" name="' . e($fieldName) . '" class="form-control" placeholder="' . e($placeholder) . '" value="' . e($value ?? '') . '" ' . $required . '>';
                 break;
 
             case 'date':
-                // Only date field gets datepicker
-                $html .= '<input type="text" name="' . ($field->name ?? '') . '" class="form-control datepicker" placeholder="' . $placeholder . '" ' . $required . '>';
+                $html .= '<input type="text" name="' . e($fieldName) . '" class="form-control datepicker" placeholder="' . e($placeholder) . '" value="' . e($value ?? '') . '" ' . $required . '>';
                 break;
 
             case 'textarea':
-                $html .= '<textarea name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '></textarea>';
+                $html .= '<textarea name="' . e($fieldName) . '" class="form-control" placeholder="' . e($placeholder) . '" ' . $required . '>' . e($value ?? '') . '</textarea>';
                 break;
 
             case 'paragraph':
-                // Unique name for paragraph
-                $fieldName = $field->name ?? 'paragraph_' . ($field->id ?? uniqid());
-                $fieldValue = isset($field->label) ? html_entity_decode(strip_tags($field->label)) : '';
-                $html .= '<textarea name="' . $fieldName . '" class="form-control bg-readonly" placeholder="' . $placeholder . '" readonly>' . e($fieldValue) . '</textarea>';
+                // readonly textarea with value (unique name to save)
+                $fieldKey = $get('name') ?? 'paragraph_' . ($get('id') ?? uniqid());
+                $fieldValue = isset($label) ? html_entity_decode(strip_tags($label)) : '';
+                $html .= '<textarea name="' . e($fieldKey) . '" class="form-control bg-readonly" placeholder="' . e($placeholder) . '" readonly>' . e($fieldValue) . '</textarea>';
                 break;
 
             case 'select':
-                $html .= '<select name="' . ($field->name ?? '') . '" class="form-control" ' . $required . '>';
-                if (!empty($field->values)) {
-                    foreach ($field->values as $option) {
-                        $html .= '<option value="' . $option->value . '">' . $option->label . '</option>';
+                // support multiple
+                $isMultiple = !empty($get('multiple')) || (strpos((string)$get('className', ''), 'multiple') !== false);
+                $selName = $isMultiple ? $fieldName . '[]' : $fieldName;
+                $multipleAttr = $isMultiple ? ' multiple' : '';
+                $html .= '<select name="' . e($selName) . '" class="form-select" ' . $multipleAttr . ' ' . $required . '>';
+                foreach ($get('values', []) as $opt) {
+                    list($optVal, $optLabel) = $readOpt($opt);
+                    $selected = '';
+                    if ($isMultiple && is_array($value) && in_array($optVal, $value)) {
+                        $selected = ' selected';
+                    } elseif (!$isMultiple && ((string)$value === $optVal)) {
+                        $selected = ' selected';
                     }
+                    $html .= '<option value="' . e($optVal) . '"' . $selected . '>' . e($optLabel) . '</option>';
                 }
                 $html .= '</select>';
                 break;
 
             case 'checkbox':
-                foreach ($field->values ?? [] as $option) {
+                // checkbox can be multiple values
+                foreach ($get('values', []) as $i => $opt) {
+                    list($optVal, $optLabel) = $readOpt($opt);
+                    $inputId = e($fieldName . '_' . $i);
+                    $checked = '';
+                    if (is_array($value) && in_array($optVal, $value)) {
+                        $checked = 'checked';
+                    } elseif ((string)$value === $optVal) {
+                        // single value saved as string
+                        $checked = 'checked';
+                    }
                     $html .= '<div class="form-check">';
-                    $html .= '<input class="form-check-input" type="checkbox" name="' . ($field->name ?? '') . '[]" value="' . $option->value . '" id="' . ($field->name ?? '') . '_' . $option->value . '" ' . $required . '>';
-                    $html .= '<label class="form-check-label" for="' . ($field->name ?? '') . '_' . $option->value . '">' . $option->label . '</label>';
+                    $html .= '<input class="form-check-input" type="checkbox" name="' . e($fieldName) . '[]" value="' . e($optVal) . '" id="' . $inputId . '" ' . $checked . ' ' . $required . '>';
+                    $html .= '<label class="form-check-label" for="' . $inputId . '">' . e($optLabel) . '</label>';
                     $html .= '</div>';
                 }
                 break;
 
             case 'radio':
-                foreach ($field->values ?? [] as $option) {
+                foreach ($get('values', []) as $i => $opt) {
+                    list($optVal, $optLabel) = $readOpt($opt);
+                    $inputId = e($fieldName . '_' . $i);
+                    $checked = ((string)$value === $optVal) ? 'checked' : '';
                     $html .= '<div class="form-check">';
-                    $html .= '<input class="form-check-input" type="radio" name="' . ($field->name ?? '') . '" value="' . $option->value . '" id="' . ($field->name ?? '') . '_' . $option->value . '" ' . $required . '>';
-                    $html .= '<label class="form-check-label" for="' . ($field->name ?? '') . '_' . $option->value . '">' . $option->label . '</label>';
+                    $html .= '<input class="form-check-input" type="radio" name="' . e($fieldName) . '" value="' . e($optVal) . '" id="' . $inputId . '" ' . $checked . ' ' . $required . '>';
+                    $html .= '<label class="form-check-label" for="' . $inputId . '">' . e($optLabel) . '</label>';
                     $html .= '</div>';
                 }
                 break;
 
             case 'file':
-                $html .= '<input type="file" name="' . ($field->name ?? '') . '" class="form-control" ' . $required . '>';
+                $multipleAttr = !empty($get('multiple')) ? ' multiple' : '';
+                $nameAttr = !empty($get('multiple')) ? e($fieldName) . '[]' : e($fieldName);
+                $html .= '<input type="file" name="' . $nameAttr . '" class="form-control" ' . $multipleAttr . ' ' . $required . '>';
                 break;
 
             case 'signature':
+                $id = e($get('id') ?? $fieldName);
                 $html .= '<div class="signature-wrapper">';
-                if (!empty($field->label)) {
-                    $html .= '<label class="form-label">' . $field->label;
-                    if (!empty($field->required)) {
-                        $html .= ' <span class="text-danger">*</span>';
-                    }
+                if (!empty($label)) {
+                    $html .= '<label class="form-label">' . e($label);
+                    if (!empty($get('required'))) $html .= ' <span class="text-danger">*</span>';
                     $html .= '</label>';
                 }
-                $html .= '<canvas id="sigpad_' . ($field->id ?? $field->name) . '" class="signature-pad"></canvas>';
-                $html .= '<input type="hidden" name="field_' . ($field->id ?? $field->name) . '_signature" id="siginput_' . ($field->id ?? $field->name) . '" ' . $required . '>';
-                $html .= '<button type="button" class="btn btn-sm btn-secondary mt-2 clear-signature" data-target="sigpad_' . ($field->id ?? $field->name) . '">Clear</button>';
+                $html .= '<canvas id="sigpad_' . $id . '" class="signature-pad" style="border:1px solid #ddd; width:100%; height:150px;"></canvas>';
+                $html .= '<input type="hidden" name="field_' . $id . '_signature" id="siginput_' . $id . '" ' . $required . '>';
+                $html .= '<button type="button" class="btn btn-sm btn-secondary mt-2 clear-signature" data-target="sigpad_' . $id . '">Clear</button>';
                 $html .= '</div>';
                 break;
 
+            case 'autocomplete':
+                // simple datalist fallback — no external JS required
+                $listId = 'list_' . e($fieldName);
+                $html .= '<input type="text" name="' . e($fieldName) . '" list="' . $listId . '" class="form-control" placeholder="' . e($placeholder) . '" value="' . e($value ?? '') . '" ' . $required . '>';
+                $html .= '<datalist id="' . $listId . '">';
+                foreach ($get('values', []) as $opt) {
+                    list($optVal, $optLabel) = $readOpt($opt);
+                    $html .= '<option value="' . e($optVal) . '">' . e($optLabel) . '</option>';
+                }
+                $html .= '</datalist>';
+                break;
+
             default:
-                $html .= '<input type="text" name="' . ($field->name ?? '') . '" class="form-control" placeholder="' . $placeholder . '" ' . $required . '>';
+                $html .= '<input type="text" name="' . e($fieldName) . '" class="form-control" placeholder="' . e($placeholder) . '" value="' . e($value ?? '') . '" ' . $required . '>';
                 break;
         }
 
         return $html;
     }
 }
+
+
 
