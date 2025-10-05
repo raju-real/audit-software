@@ -37,7 +37,7 @@
                                     <tr>
                                         <td class="text-center">{{ $loop->index + 1 }}</td>
                                         <td>{{ $form->audit_step->short_title }}: {{ $form->audit_step->title }}</td>
-                                        <td>{{ $form->question->question ?? '' }}</td>
+                                        <td {!! tooltip($form->question->question) !!}>{{ textLimit($form->question->question,30) ?? '' }}</td>
                                         <td data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $form->title }}">
                                             {{ textLimit($form->title, 30) }}</td>
                                         
